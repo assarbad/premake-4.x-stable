@@ -88,4 +88,10 @@
 		trigger     = "version",
 		description = "Display version information"
 	}
+
+	newoption
+	{
+		trigger     = "generate_user",
+		description = "Generate (and remove when cleaning) .user VStudio files"
+	}
 	

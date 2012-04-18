@@ -93,7 +93,9 @@
 		kind "ConsoleApp"
 		prepare()
 		test.contains(removed, "MyProject.csproj")
-		test.contains(removed, "MyProject.csproj.user")
+		if _OPTIONS.generate_user then
+			test.contains(removed, "MyProject.csproj.user")
+		end
 		test.contains(removed, "MyProject.pdb")
 		test.contains(removed, "MyProject.idb")
 		test.contains(removed, "MyProject.ilk")
