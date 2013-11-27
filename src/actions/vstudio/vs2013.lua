@@ -7,7 +7,7 @@
 	premake.vstudio.vc2013 = {}
 	local vc2013 = premake.vstudio.vc2013
 	local vstudio = premake.vstudio
-
+  
 
 ---
 -- Register a command-line action for Visual Studio 2013.
