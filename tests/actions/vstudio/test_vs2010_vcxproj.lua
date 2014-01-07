@@ -2,6 +2,7 @@
 	local vs10_vcxproj = T.vs2010_vcxproj
 	local include_directory = "bar/foo"
 	local include_directory2 = "baz/foo"
+	local resinclude_directory = "foo/bar/baz"
 	local debug_define = "I_AM_ALIVE_NUMBER_FIVE"
 	local vc2010 = premake.vstudio.vc2010
 
@@ -43,6 +44,7 @@
 		configuration("Debug")
 			defines {debug_define}
 			links{"foo_d"}
+			resincludedirs {resinclude_dir}
 
 	end
 
@@ -186,6 +188,15 @@
 	function vs10_vcxproj.hasItemGroupSection()
 		local buffer = get_buffer()
 		test.string_contains(buffer,'<ItemGroup>.*</ItemGroup>')
+	end
+
+	local function resource_compile_string(version)
+		return '<ItemDefinitionGroup Condition="\'%$%(Configuration%)|%$%(Platform%)\'==\''..version..'|Win32\'">.*<ResourceCompile>'
+	end
+
+	function vs10_vcxproj.resincludeDirectories_debugEntryContains_include_directory()
+		local buffer = get_buffer()
+		test.string_contains(buffer,resource_compile_string('Debug').. '.*<AdditionalIncludeDirectories>.*'.. path.translate(resinclude_directory, '\\') ..';.*</AdditionalIncludeDirectories>')
 	end
 
 	function vs10_vcxproj.itemGroupSection_hasResourceCompileSection()
