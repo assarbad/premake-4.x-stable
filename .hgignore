@@ -31,3 +31,5 @@ project.bbprojectdata
 Premake4.tmproj
 Visual Lint/PC-lint/**.vlstatus
 *.lnt
+intermediate/**
+premake4.exe
