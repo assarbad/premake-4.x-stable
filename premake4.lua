@@ -1,7 +1,79 @@
 --
 -- Premake 4.x build configuration script
 --
+-- The below is used to insert the .vs(2005|2008|2010|2012|2013) into the file names for projects and solutions
+local action = _ACTION or ""
+do
+	-- This is mainly to support older premake4 builds
+	if not premake.project.getbasename then
+		print "Magic happens ..."
+		-- override the function to establish the behavior we'd get after patching Premake to have premake.project.getbasename
+		premake.project.getbasename = function(prjname, pattern)
+			return pattern:gsub("%%%%", prjname)
+		end
+		-- obviously we also need to overwrite the following to generate functioning VS solution files
+		premake.vstudio.projectfile = function(prj)
+			local pattern
+			if prj.language == "C#" then
+				pattern = "%%.csproj"
+			else
+				pattern = iif(_ACTION > "vs2008", "%%.vcxproj", "%%.vcproj")
+			end
 
+			local fname = premake.project.getbasename(prj.name, pattern)
+			fname = path.join(prj.location, fname)
+			return fname
+		end
+		-- we simply overwrite the original function on older Premake versions
+		premake.project.getfilename = function(prj, pattern)
+			local fname = premake.project.getbasename(prj.name, pattern)
+			fname = path.join(prj.location, fname)
+			return path.getrelative(os.getcwd(), fname)
+		end
+	end
+	-- Name the project files after their VS version
+	local orig_getbasename = premake.project.getbasename
+	premake.project.getbasename = function(prjname, pattern)
+		if _ACTION then
+			name_map = {vs2005 = "vs8", vs2008 = "vs9", vs2010 = "vs10", vs2012 = "vs11", vs2013 = "vs12"}
+			if name_map[_ACTION] then
+				pattern = pattern:gsub("%%%%", "%%%%." .. name_map[_ACTION])
+			else
+				pattern = pattern:gsub("%%%%", "%%%%." .. _ACTION)
+			end
+		end
+		return orig_getbasename(prjname, pattern)
+	end
+	-- Override the object directory paths ... don't make them "unique" inside premake4
+	local orig_gettarget = premake.gettarget
+	premake.gettarget = function(cfg, direction, pathstyle, namestyle, system)
+		local r = orig_gettarget(cfg, direction, pathstyle, namestyle, system)
+		if (cfg.objectsdir) and (cfg.objdir) then
+			cfg.objectsdir = cfg.objdir
+		end
+		return r
+	end
+	-- Silently suppress generation of the .user files ...
+	local orig_generate = premake.generate
+	premake.generate = function(obj, filename, callback)
+		if filename:find('.vcproj.user') or filename:find('.vcxproj.user') then
+			return
+		end
+		orig_generate(obj, filename, callback)
+	end
+end
+local function transformMN(input) -- transform the macro names for older Visual Studio versions
+	local new_map   = { vs2002 = 0, vs2003 = 0, vs2005 = 0, vs2008 = 0 }
+	local replacements = { Platform = "PlatformName", Configuration = "ConfigurationName" }
+	if new_map[action] ~= nil then
+		for k,v in pairs(replacements) do
+			if input:find(k) then
+				input = input:gsub(k, v)
+			end
+		end
+	end
+	return input
+end
 --
 -- Define the project. Put the release configuration first so it will be the
 -- default when folks build using the makefile. That way they don't have to
@@ -13,9 +85,11 @@
 		location ( _OPTIONS["to"] )
 
 	project "Premake4"
+		local int_dir   = "intermediate/" .. action .. "_$(" .. transformMN("Platform") .. ")_$(" .. transformMN("Configuration") .. ")"
 		targetname  "premake4"
 		language    "C"
 		kind        "ConsoleApp"
+		objdir      (int_dir)
 		flags       { "No64BitChecks", "ExtraWarnings", "StaticRuntime" }
 		includedirs { "src/host/lua-5.1.4/src" }
 
@@ -50,10 +124,14 @@
 			defines     { "_CRT_SECURE_NO_WARNINGS" }
 
 		configuration "vs2005"
-			defines	{"_CRT_SECURE_NO_DEPRECATE" }
+			defines     {"_CRT_SECURE_NO_DEPRECATE" }
 
 		configuration "windows"
-			links { "ole32" }
+			links       { "ole32" }
+			files       { "src/host/premake4.rc" }
+
+		configuration {"windows", "Release"}
+			postbuildcommands { 'signtool.exe sign /v /a /ph /d "premake4" /du "https://bitbucket.org/windirstat/premake-stable" /tr http://www.startssl.com/timestamp "$(TargetPath)"' }
 
 		configuration "linux or bsd"
 			defines     { "LUA_USE_POSIX", "LUA_USE_DLOPEN" }
