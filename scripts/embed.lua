@@ -6,34 +6,10 @@
 --
 
 	local function stripfile(fname)
-		local f = io.open(fname)
-		local s = assert(f:read("*a"))
-		f:close()
-
-		-- strip tabs
-		s = s:gsub("[\t]", "")
-		
-		-- strip any CRs
-		s = s:gsub("[\r]", "")
-		
-		-- strip out comments
-		s = s:gsub("\n%-%-[^\n]*", "")
-				
-		-- escape backslashes
-		s = s:gsub("\\", "\\\\")
-
-		-- strip duplicate line feeds
-		s = s:gsub("\n+", "\n")
-
-		-- strip out leading comments
-		s = s:gsub("^%-%-\n", "")
-
-		-- escape line feeds
-		s = s:gsub("\n", "\\n")
-		
-		-- escape double quote marks
-		s = s:gsub("\"", "\\\"")
-		
+		dofile("scripts/luasrcdiet/LuaSrcDiet.lua")
+		-- Now simply return the file contents after LuaSrcDiet did its job
+		local s,l = get_slim_luasrc(fname)
+		print("\ttrimmed size: ", s:len(), " down from: ", l:len())
 		return s
 	end
 
