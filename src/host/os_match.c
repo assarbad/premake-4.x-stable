@@ -25,7 +25,7 @@ int os_matchstart(lua_State* L)
 {
 	const char* mask = luaL_checkstring(L, 1);
 	MatchInfo* m = (MatchInfo*)malloc(sizeof(MatchInfo));
-	m->handle = FindFirstFile(mask, &m->entry);
+	m->handle = FindFirstFile(mask, &m->entry); /* error handling happens in os_matchnext() below */
 	m->is_first = 1;
 	lua_pushlightuserdata(L, m);
 	return 1;
@@ -69,11 +69,17 @@ int os_matchnext(lua_State* L)
 		}
 
 		m->is_first = 0;
-		if (m->entry.cFileName[0] != '.')
-		{
-			lua_pushboolean(L, 1);
-			return 1;
-		}
+		/* Ignore the directory entries for . and .. only */
+		if (m->entry.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+			if (m->entry.cFileName[0] == '.')
+			{
+				if (m->entry.cFileName[1] == '\0')
+					continue;
+				if (m->entry.cFileName[1] == '.' && m->entry.cFileName[2] == '\0')
+					continue;
+			}
+		lua_pushboolean(L, 1);
+		return 1;
 	}
 
 	return 0;
