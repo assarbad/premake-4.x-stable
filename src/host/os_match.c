@@ -8,6 +8,17 @@
 #include <string.h>
 #include "premake.h"
 
+static int skip_dot_entries(const char* name)
+{
+	if (name[0] == '.')
+	{
+		if (name[1] == '\0')
+			return 1;
+		if (name[1] == '.' && name[2] == '\0')
+			return 1;
+	}
+	return 0;
+}
 
 #if PLATFORM_WINDOWS
 
@@ -71,13 +82,8 @@ int os_matchnext(lua_State* L)
 		m->is_first = 0;
 		/* Ignore the directory entries for . and .. only */
 		if (m->entry.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-			if (m->entry.cFileName[0] == '.')
-			{
-				if (m->entry.cFileName[1] == '\0')
-					continue;
-				if (m->entry.cFileName[1] == '.' && m->entry.cFileName[2] == '\0')
-					continue;
-			}
+			if (skip_dot_entries(m->entry.cFileName))
+				continue;
 		lua_pushboolean(L, 1);
 		return 1;
 	}
@@ -175,11 +181,13 @@ int os_matchnext(lua_State* L)
 	while (m->entry != NULL)
 	{
 		const char* name = m->entry->d_name;
-		if (name[0] != '.' && fnmatch(m->mask, name, 0) == 0)
-		{
-			lua_pushboolean(L, 1);
-			return 1;
-		}
+		/* Ignore the directory entries for . and .. only */
+		if (!skip_dot_entries(name))
+			if (fnmatch(m->mask, name, 0) == 0)
+			{
+				lua_pushboolean(L, 1);
+				return 1;
+			}
 		m->entry = readdir(m->handle);
 	}
 
