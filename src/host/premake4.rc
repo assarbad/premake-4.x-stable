@@ -28,7 +28,7 @@ BEGIN
             VALUE "FileVersion", "4.4-wds"
             VALUE "InternalName", "premake4-windirstat"
             VALUE "LegalCopyright", "Copyright (C) 2002-2013 by Jason Perkins, with minor customizations by WDS team"
-            VALUE "OriginalFilename", "windirstat.exe"
+            VALUE "OriginalFilename", "premake4.exe"
             VALUE "ProductName", "premake4"
             VALUE "ProductVersion", "4.4-wds"
         END
