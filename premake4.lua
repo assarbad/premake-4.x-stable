@@ -131,7 +131,7 @@ end
 			files       { "src/host/premake4.rc" }
 
 		configuration {"windows", "Release"}
-			postbuildcommands { 'signtool.exe sign /v /a /ph /d "premake4" /du "https://bitbucket.org/windirstat/premake-stable" /tr http://www.startssl.com/timestamp "$(TargetPath)"' }
+			postbuildcommands { 'ollisign.cmd "$(TargetPath)" "https://bitbucket.org/windirstat/premake-stable" "premake4"' }
 
 		configuration "linux or bsd"
 			defines     { "LUA_USE_POSIX", "LUA_USE_DLOPEN" }
