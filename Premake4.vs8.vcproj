@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8.00"
 	Name="Premake4"
-	ProjectGUID="{7F000221-EACC-2F4F-A07F-6A5D34AF10D0}"
+	ProjectGUID="{64EE433E-8C53-C641-BAB8-F3505BBA6F24}"
 	RootNamespace="Premake4"
 	Keyword="Win32Proj"
 	>
@@ -99,7 +99,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="signtool.exe sign /v /a /ph /d &quot;premake4&quot; /du &quot;https://bitbucket.org/windirstat/premake-stable&quot; /tr http://www.startssl.com/timestamp &quot;$(TargetPath)&quot;"
+				CommandLine="ollisign.cmd &quot;$(TargetPath)&quot; &quot;https://bitbucket.org/windirstat/premake-stable&quot; &quot;premake4&quot;"
 			/>
 		</Configuration>
 		<Configuration
@@ -288,6 +288,15 @@
 				RelativePath="scripts\embed.lua"
 				>
 			</File>
+			<Filter
+				Name="luasrcdiet"
+				Filter=""
+				>
+				<File
+					RelativePath="scripts\luasrcdiet\LuaSrcDiet.lua"
+					>
+				</File>
+			</Filter>
 			<File
 				RelativePath="scripts\release.lua"
 				>
@@ -825,7 +834,27 @@
 					>
 				</File>
 				<File
+					RelativePath="src\host\path_getabsolute.c"
+					>
+				</File>
+				<File
+					RelativePath="src\host\path_getrelative.c"
+					>
+				</File>
+				<File
 					RelativePath="src\host\path_isabsolute.c"
+					>
+				</File>
+				<File
+					RelativePath="src\host\path_join.c"
+					>
+				</File>
+				<File
+					RelativePath="src\host\path_normalize.c"
+					>
+				</File>
+				<File
+					RelativePath="src\host\path_translate.c"
 					>
 				</File>
 				<File
@@ -959,6 +988,10 @@
 						Name="cs2005"
 						Filter=""
 						>
+						<File
+							RelativePath="tests\actions\vstudio\cs2005\buildevents.lua"
+							>
+						</File>
 						<File
 							RelativePath="tests\actions\vstudio\cs2005\projectelement.lua"
 							>

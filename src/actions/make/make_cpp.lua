@@ -239,7 +239,7 @@
 
 		_p('  ALL_CPPFLAGS  += $(CPPFLAGS) %s $(DEFINES) $(INCLUDES)', table.concat(cc.getcppflags(cfg), " "))
 
-		_p('  ALL_CFLAGS    += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH)%s', make.list(table.join(cc.getcflags(cfg), cfg.buildoptions)))
+		_p('  ALL_CFLAGS    += $(CFLAGS) $(ALL_CPPFLAGS)%s', make.list(table.join(cc.getcflags(cfg), cfg.buildoptions)))
 		_p('  ALL_CXXFLAGS  += $(CXXFLAGS) $(ALL_CFLAGS)%s', make.list(cc.getcxxflags(cfg)))
 
 		_p('  ALL_RESFLAGS  += $(RESFLAGS) $(DEFINES) $(INCLUDES)%s',
@@ -274,7 +274,7 @@
 			-- $(LIBS) moved to end (http://sourceforge.net/p/premake/bugs/279/)
 
 			local tool = iif(cfg.language == "C", "CC", "CXX")
-			_p('  LINKCMD    = $(%s) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ARCH) $(ALL_LDFLAGS) $(LIBS)', tool)
+			_p('  LINKCMD    = $(%s) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ALL_LDFLAGS) $(LIBS)', tool)
 
 		end
 	end
@@ -358,5 +358,5 @@
 
 	function cpp.buildcommand(iscfile, objext)
 		local flags = iif(iscfile, '$(CC) $(ALL_CFLAGS)', '$(CXX) $(ALL_CXXFLAGS)')
-		_p('\t$(SILENT) %s $(FORCE_INCLUDE) -o "$@" -MF $(@:%%.%s=%%.d) -c "$<"', flags, objext)
+		_p('\t$(SILENT) %s $(FORCE_INCLUDE) -o "$@" -MF "$(@:%%.%s=%%.d)" -c "$<"', flags, objext)
 	end
