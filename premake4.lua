@@ -1,7 +1,7 @@
 --
 -- Premake 4.x build configuration script
 --
--- The below is used to insert the .vs(2005|2008|2010|2012|2013) into the file names for projects and solutions
+-- The below is used to insert the .vs(2005|2008|2010|2012|2013|2015) into the file names for projects and solutions
 local action = _ACTION or ""
 do
 	-- This is mainly to support older premake4 builds
@@ -35,7 +35,7 @@ do
 	local orig_getbasename = premake.project.getbasename
 	premake.project.getbasename = function(prjname, pattern)
 		if _ACTION then
-			name_map = {vs2005 = "vs8", vs2008 = "vs9", vs2010 = "vs10", vs2012 = "vs11", vs2013 = "vs12"}
+			name_map = {vs2005 = "vs8", vs2008 = "vs9", vs2010 = "vs10", vs2012 = "vs11", vs2013 = "vs12", vs2015 = "vs14"}
 			if name_map[_ACTION] then
 				pattern = pattern:gsub("%%%%", "%%%%." .. name_map[_ACTION])
 			else
@@ -81,7 +81,7 @@ end
 --
 
 	solution "Premake4"
-		configurations { "Release", "Debug" }
+		configurations { "Release", "Debug", "Publish" }
 		location ( _OPTIONS["to"] )
 
 	project "Premake4"
@@ -108,7 +108,8 @@ end
 			"src/host/lua-5.1.4/src/luac.c",
 			"src/host/lua-5.1.4/src/print.c",
 			"src/host/lua-5.1.4/**.lua",
-			"src/host/lua-5.1.4/etc/*.c"
+			"src/host/lua-5.1.4/etc/*.c",
+            "src/host/hgtip.h"
 		}
 
 		configuration "Debug"
@@ -116,7 +117,7 @@ end
 			defines     "_DEBUG"
 			flags       { "Symbols" }
 
-		configuration "Release"
+		configuration "Release or Publish"
 			targetdir   "bin/release"
 			defines     "NDEBUG"
 			flags       { "OptimizeSize" }
@@ -131,8 +132,9 @@ end
 			links       { "ole32" }
 			files       { "src/host/premake4.rc" }
 
-		configuration {"windows", "Release"}
+		configuration {"windows", "Publish"}
 			postbuildcommands { 'ollisign.cmd "$(TargetPath)" "https://bitbucket.org/windirstat/premake-stable" "premake4"' }
+			defines     "HAVE_HGTIP"
 
 		configuration "linux or bsd"
 			defines     { "LUA_USE_POSIX", "LUA_USE_DLOPEN" }

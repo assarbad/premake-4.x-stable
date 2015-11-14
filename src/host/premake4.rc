@@ -4,6 +4,9 @@
 
 #include <winnt.rh>
 #include <verrsrc.h>
+#ifdef HAVE_HGTIP
+#   include "hgtip.h"
+#endif
 
 #ifdef _WIN32
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
@@ -25,12 +28,18 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "WDS Team"
             VALUE "FileDescription", "A build configuration tool"
-            VALUE "FileVersion", "4.4-wds"
             VALUE "InternalName", "premake4-windirstat"
-            VALUE "LegalCopyright", "Copyright (C) 2002-2013 by Jason Perkins, with minor customizations by WDS team"
-            VALUE "OriginalFilename", "premake4.exe"
-            VALUE "ProductName", "premake4"
+#ifdef HAVE_HGTIP
+            VALUE "FileVersion", "4.4-wds-" HG_TIP_REVNO
+            VALUE "ProductVersion", "4.4-wds-" HG_TIP_REVNO
+            VALUE "OriginalFilename", "premake4.rev-" HG_TIP_REVNO "-" HG_TIP_ID ".exe"
+#else
+            VALUE "FileVersion", "4.4-wds"
             VALUE "ProductVersion", "4.4-wds"
+            VALUE "OriginalFilename", "premake4.exe"
+#endif
+            VALUE "LegalCopyright", "Copyright (C) 2002-2013 by Jason Perkins, with minor customizations by WDS team"
+            VALUE "ProductName", "premake4"
         END
     END
     BLOCK "VarFileInfo"

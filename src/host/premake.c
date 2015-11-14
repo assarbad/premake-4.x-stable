@@ -12,8 +12,12 @@
 #include <CoreFoundation/CFBundle.h>
 #endif
 
-
+#ifdef HAVE_HGTIP
+#   include "hgtip.h"
+#   define VERSION        HG_TIP_ID ":" HG_TIP_REVNO
+#else
 #define VERSION        "HEAD"
+#endif
 #define COPYRIGHT      "Copyright (C) 2002-2013 Jason Perkins and the Premake Project"
 #define ERROR_MESSAGE  "%s\n"
 

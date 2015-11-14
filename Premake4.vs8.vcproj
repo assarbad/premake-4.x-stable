@@ -99,7 +99,6 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="ollisign.cmd &quot;$(TargetPath)&quot; &quot;https://bitbucket.org/windirstat/premake-stable&quot; &quot;premake4&quot;"
 			/>
 		</Configuration>
 		<Configuration
@@ -186,6 +185,93 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Publish|Win32"
+			OutputDirectory="bin\release"
+			IntermediateDirectory="intermediate\vs2005_$(PlatformName)_$(ConfigurationName)"
+			ConfigurationType="1"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="1"
+				AdditionalIncludeDirectories="src\host\lua-5.1.4\src"
+				PreprocessorDefinitions="NDEBUG;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;HAVE_HGTIP"
+				StringPooling="true"
+				RuntimeLibrary="0"
+				EnableFunctionLevelLinking="true"
+				UsePrecompiledHeader="0"
+				WarningLevel="4"
+				Detect64BitPortabilityProblems="false"
+				ProgramDataBaseFileName="$(OutDir)\premake4.pdb"
+				DebugInformationFormat="0"
+				CompileAs="1"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;HAVE_HGTIP"
+				AdditionalIncludeDirectories="src\host\lua-5.1.4\src"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="ole32.lib"
+				OutputFile="$(OutDir)\premake4.exe"
+				LinkIncremental="1"
+				AdditionalLibraryDirectories=""
+				GenerateDebugInformation="false"
+				SubSystem="1"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				EntryPointSymbol="mainCRTStartup"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				CommandLine="ollisign.cmd &quot;$(TargetPath)&quot; &quot;https://bitbucket.org/windirstat/premake-stable&quot; &quot;premake4&quot;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -457,6 +543,10 @@
 					</File>
 					<File
 						RelativePath="src\actions\vstudio\vs2013.lua"
+						>
+					</File>
+					<File
+						RelativePath="src\actions\vstudio\vs2015.lua"
 						>
 					</File>
 				</Filter>
