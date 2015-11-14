@@ -40,3 +40,4 @@ Visual Lint/PC-lint/**.vlstatus
 intermediate/**
 premake4.exe
 src/host/hgtip.h
+*.asc

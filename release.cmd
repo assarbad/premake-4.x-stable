@@ -10,9 +10,10 @@ echo #define HG_TIP_ID "%HG_TIP_ID%" > %HGTIPFILE%
 echo #define HG_TIP_REVNO "%HG_TIP_REVNO%" >> %HGTIPFILE%
 if exist %HGTIPFILE% type %HGTIPFILE%
 vcbuild /rebuild /time Premake4.vs8.sln "Publish|Win32"
-copy /y "%~dp0bin\release\premake4.exe" "%~dp0premake4.rev-%HG_TIP_ID%-%HG_TIP_REVNO%.exe"
-sigcheck -a "%~dp0premake4.rev-%HG_TIP_ID%-%HG_TIP_REVNO%.exe"
-gpg2 -bao "%~dp0premake4.rev-%HG_TIP_ID%-%HG_TIP_REVNO%.exe.asc" "%~dp0premake4.rev-%HG_TIP_ID%-%HG_TIP_REVNO%.exe"
+set NEWNAME=%~dp0premake4.rev-%HG_TIP_REVNO%-%HG_TIP_ID%.exe
+copy /y "%~dp0bin\release\premake4.exe" "%NEWNAME%"
+sigcheck -a "%NEWNAME%"
+gpg2 -bao "%NEWNAME%.asc" "%NEWNAME%"
 popd & endlocal & goto :EOF
 goto :EOF
 
