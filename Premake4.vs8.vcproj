@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8.00"
 	Name="Premake4"
-	ProjectGUID="{64EE433E-8C53-C641-BAB8-F3505BBA6F24}"
+	ProjectGUID="{7F000221-EACC-2F4F-A07F-6A5D34AF10D0}"
 	RootNamespace="Premake4"
 	Keyword="Win32Proj"
 	>

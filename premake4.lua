@@ -86,6 +86,7 @@ end
 
 	project "Premake4"
 		local int_dir   = "intermediate/" .. action .. "_$(" .. transformMN("Platform") .. ")_$(" .. transformMN("Configuration") .. ")"
+		uuid        "7F000221-EACC-2F4F-A07F-6A5D34AF10D0"
 		targetname  "premake4"
 		language    "C"
 		kind        "ConsoleApp"
