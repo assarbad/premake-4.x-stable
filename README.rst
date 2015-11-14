@@ -1,7 +1,6 @@
 ﻿=================================
  Premake 4.4 fork for WinDirStat
 =================================
-:Author: Oliver Schneider
 
 About
 -----
