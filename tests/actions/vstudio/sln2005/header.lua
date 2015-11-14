@@ -77,3 +77,20 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 		]]
 	end
+
+	function suite.On2015()
+		_ACTION = "vs2015"
+		prepare()
+		test.capture [[
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2015
+		]]
+--[[
+VS2015 seems to add:
+
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+
+which don't seem to be mandatory, though.
+]]
+	end
