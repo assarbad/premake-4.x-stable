@@ -34,6 +34,7 @@ do
 	-- Name the project files after their VS version
 	local orig_getbasename = premake.project.getbasename
 	premake.project.getbasename = function(prjname, pattern)
+        -- The below is used to insert the .vs(8|9|10|11|12|14) into the file names for projects and solutions
 		if _ACTION then
 			name_map = {vs2005 = "vs8", vs2008 = "vs9", vs2010 = "vs10", vs2012 = "vs11", vs2013 = "vs12", vs2015 = "vs14"}
 			if name_map[_ACTION] then
