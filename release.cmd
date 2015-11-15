@@ -10,6 +10,8 @@ echo #define HG_TIP_ID "%HG_TIP_ID%" > %HGTIPFILE%
 echo #define HG_TIP_REVNO "%HG_TIP_REVNO%" >> %HGTIPFILE%
 if exist %HGTIPFILE% type %HGTIPFILE%
 vcbuild /rebuild /time Premake4.vs8.sln "Publish|Win32"
+"%~dp0bin\release\premake4.exe" embed
+vcbuild /rebuild /time Premake4.vs8.sln "Publish|Win32"
 set NEWNAME=%~dp0premake4.rev-%HG_TIP_REVNO%-%HG_TIP_ID%.exe
 copy /y "%~dp0bin\release\premake4.exe" "%NEWNAME%"
 sigcheck -a "%NEWNAME%"
