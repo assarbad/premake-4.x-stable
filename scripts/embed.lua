@@ -85,7 +85,7 @@
 		for i,fn in ipairs(scripts) do
 			print(fn)
 			local s = stripfile("src/" .. fn)
-			fnames = fnames .. "\n" .. "\t\"" .. fn .. "\","
+			fnames = fnames .. "\n" .. "\t\"@" .. fn .. "\","
 			writefile(out, fn, s)
 		end
 		
