@@ -363,7 +363,7 @@ static int load_file_scripts(lua_State* L)
 extern const char* builtin_script_fnames[];
 
 #define luaL_dobuffer(L, s, n) \
-    (luaL_loadbuffer(L, s, strlen(s), n) || lua_pcall(L, 0, LUA_MULTRET, 0))
+	(luaL_loadbuffer(L, s, strlen(s), n) || lua_pcall(L, 0, LUA_MULTRET, 0))
 
 /**
  * When running in release mode, the scripts are loaded from a static data
@@ -375,16 +375,27 @@ static int load_builtin_scripts(lua_State* L)
 	int i;
 	for (i = 0; builtin_scripts[i]; ++i)
 	{
-		if (luaL_dostring(L, builtin_scripts[i]) != OKAY)
+		if (builtin_script_fnames[i])
 		{
-			printf(ERROR_MESSAGE, lua_tostring(L, -1));
-			return !OKAY;
+			if (luaL_dobuffer(L, builtin_scripts[i], builtin_script_fnames[i]) != OKAY)
+			{
+				printf(ERROR_MESSAGE, lua_tostring(L, -1));
+				return !OKAY;
+			}
+		}
+		else
+		{
+			if (luaL_dostring(L, builtin_scripts[i]) != OKAY)
+			{
+				printf(ERROR_MESSAGE, lua_tostring(L, -1));
+				return !OKAY;
+			}
 		}
 	}
 
-    /* in release mode, also show full traceback on all errors */
-    lua_getglobal(L, "debug");
-    lua_getfield(L, -1, "traceback");
+	/* in release mode, also show full traceback on all errors */
+	lua_getglobal(L, "debug");
+	lua_getfield(L, -1, "traceback");
 
 	/* hand off control to the scripts */
 	lua_getglobal(L, "_premake_main");
