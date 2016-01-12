@@ -68,6 +68,7 @@
 	function doembed()
 		raw_sum = 0
 		trim_sum = 0
+		fnames = "const char* builtin_script_fnames[] = {"
 		-- load the manifest of script files
 		scripts = dofile("src/_manifest.lua")
 
@@ -84,10 +85,14 @@
 		for i,fn in ipairs(scripts) do
 			print(fn)
 			local s = stripfile("src/" .. fn)
+			fnames = fnames .. "\n" .. "\t\"" .. fn .. "\","
 			writefile(out, fn, s)
 		end
 		
-		out:write("\t0\n};\n");
+		out:write("\t0\n};\n\n");
+		out:write(fnames);
+		out:write("\n\t0\n};\n");
+
 		out:close()
 		print(string.format("Lua scripts trimmed down to %2.1f%% of original size (%d/%d)", (trim_sum / raw_sum) * 100, trim_sum, raw_sum))
 	end

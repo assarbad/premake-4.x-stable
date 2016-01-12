@@ -360,6 +360,10 @@ static int load_file_scripts(lua_State* L)
 	}
 }
 
+extern const char* builtin_script_fnames[];
+
+#define luaL_dobuffer(L, s, n) \
+    (luaL_loadbuffer(L, s, strlen(s), n) || lua_pcall(L, 0, LUA_MULTRET, 0))
 
 /**
  * When running in release mode, the scripts are loaded from a static data
