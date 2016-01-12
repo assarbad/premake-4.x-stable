@@ -378,9 +378,13 @@ static int load_builtin_scripts(lua_State* L)
 		}
 	}
 
+    /* in release mode, also show full traceback on all errors */
+    lua_getglobal(L, "debug");
+    lua_getfield(L, -1, "traceback");
+
 	/* hand off control to the scripts */
 	lua_getglobal(L, "_premake_main");
-	if (lua_pcall(L, 0, 1, 0) != OKAY)
+	if (lua_pcall(L, 0, 1, -2) != OKAY)
 	{
 		printf(ERROR_MESSAGE, lua_tostring(L, -1));
 		return !OKAY;
