@@ -1,8 +1,15 @@
---
--- Premake 4.x build configuration script
---
--- The below is used to insert the .vs(2005|2008|2010|2012|2013|2015) into the file names for projects and solutions
+--[[
+        This premake4.lua _requires_ windirstat/premake-stable to work properly.
+        If you don't want to use the code-signed build that can be found in the
+        download section of that project, you can build from the WDS-branch at:
+
+        https://bitbucket.org/windirstat/premake-stable
+--]]
 local action = _ACTION or ""
+if _OPTIONS["publish"] then
+    print "INFO: Creating 'Publish' build solution."
+    publish = true
+end
 do
 	-- This is mainly to support older premake4 builds
 	if not premake.project.getbasename then

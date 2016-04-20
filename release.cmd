@@ -11,13 +11,35 @@ echo #define HG_TIP_REVNO "%HG_TIP_REVNO%" >> %HGTIPFILE%
 if exist %HGTIPFILE% type %HGTIPFILE%
 vcbuild /rebuild /time Premake4.vs8.sln "Publish|Win32"
 "%~dp0bin\release\premake4.exe" embed
-vcbuild /rebuild /time Premake4.vs8.sln "Publish|Win32"
-set NEWNAME=%~dp0premake4.rev-%HG_TIP_REVNO%-%HG_TIP_ID%.exe
-copy /y "%~dp0bin\release\premake4.exe" "%NEWNAME%"
-sigcheck -a "%NEWNAME%"
-gpg2 -bao "%NEWNAME%.asc" "%NEWNAME%"
+call :BuildSignCopyOne "%~dp0" "premake4" "bin\release" "%HG_TIP_REVNO%" "%HG_TIP_ID%" Premake4.vs8.sln Publish Win32
 popd & endlocal & goto :EOF
 goto :EOF
+
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+::: / SignAndCopyOne subroutine
+:::   Copies a 
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+:BuildSignCopyOne
+setlocal ENABLEEXTENSIONS
+set BASEPATH=%~1
+set BASENAME=%~2
+set BINDIR=%~3
+set HG_TIP_REVNO=%~4
+set HG_TIP_ID=%~5
+set SLNFILE=%~6
+set SLNCFGNAME=%~7
+set SLNCFGPLTF=%~8
+vcbuild /rebuild /time "%SLNFILE%" "%SLNCFGNAME%|%SLNCFGPLTF%"
+set NEWNAME=%BASEPATH%%BASENAME%.rev-%HG_TIP_REVNO%-%HG_TIP_ID%.exe
+copy /y "%BASEPATH%%BINDIR%\%BASENAME%.exe" "%NEWNAME%"
+sigcheck -a "%NEWNAME%"
+gpg2 --batch --yes -bao "%NEWNAME%.asc" "%NEWNAME%"
+copy /y "%BASEPATH%%BINDIR%\%BASENAME%.exe" "%BASEPATH%%BASENAME%.exe"
+endlocal
+goto :EOF
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+::: \ SignAndCopyOne subroutine
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 ::: / SetVar subroutine
