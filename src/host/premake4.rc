@@ -17,6 +17,16 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 #pragma code_page(1252)
 #endif //_WIN32
 
+#ifndef PPSX
+#   define PPSX(s) #s
+#endif
+#ifndef PPS
+#   define PPS(s) PPSX(s)
+#endif
+#ifndef PREMAKE_VERSION
+#   define PREMAKE_VERSION 4.4-wds
+#endif
+
 VS_VERSION_INFO VERSIONINFO
  FILEVERSION 4,4,0,0xFFFF
  PRODUCTVERSION 4,4,0,0
@@ -32,14 +42,14 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "WDS Team"
             VALUE "FileDescription", "A build configuration tool"
-            VALUE "InternalName", "premake4-windirstat"
+            VALUE "InternalName", PPS(PREMAKE_VERSION)
 #ifdef HAVE_HGTIP
-            VALUE "FileVersion", "4.4-wds-" HG_TIP_REVNO
-            VALUE "ProductVersion", "4.4-wds-" HG_TIP_REVNO
+            VALUE "FileVersion", PPS(PREMAKE_VERSION) "-" HG_TIP_REVNO
+            VALUE "ProductVersion", PPS(PREMAKE_VERSION) "-" HG_TIP_REVNO
             VALUE "OriginalFilename", "premake4.rev-" HG_TIP_REVNO "-" HG_TIP_ID ".exe"
 #else
-            VALUE "FileVersion", "4.4-wds"
-            VALUE "ProductVersion", "4.4-wds"
+            VALUE "FileVersion", PPS(PREMAKE_VERSION) 
+            VALUE "ProductVersion", PPS(PREMAKE_VERSION) 
             VALUE "OriginalFilename", "premake4.exe"
 #endif
             VALUE "LegalCopyright", "Copyright (C) 2002-2013 by Jason Perkins, with minor customizations by WDS team"

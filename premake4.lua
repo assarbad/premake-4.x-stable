@@ -41,7 +41,7 @@ do
 	-- Name the project files after their VS version
 	local orig_getbasename = premake.project.getbasename
 	premake.project.getbasename = function(prjname, pattern)
-        -- The below is used to insert the .vs(8|9|10|11|12|14) into the file names for projects and solutions
+		-- The below is used to insert the .vs(8|9|10|11|12|14) into the file names for projects and solutions
 		if _ACTION then
 			name_map = {vs2005 = "vs8", vs2008 = "vs9", vs2010 = "vs10", vs2012 = "vs11", vs2013 = "vs12", vs2015 = "vs14"}
 			if name_map[_ACTION] then
@@ -88,9 +88,9 @@ end
 -- worry about the /scripts argument and all that.
 --
 
-	solution "Premake4"
-		configurations { "Release", "Debug", "Publish" }
-		location ( _OPTIONS["to"] )
+solution "Premake4"
+	configurations { "Release", "Debug", "Publish" }
+	location ( _OPTIONS["to"] )
 
 	project "Premake4"
 		local int_dir   = "intermediate/" .. action .. "_$(" .. transformMN("Platform") .. ")_$(" .. transformMN("Configuration") .. ")"
@@ -117,7 +117,10 @@ end
 			"src/host/lua-5.1.4/src/print.c",
 			"src/host/lua-5.1.4/**.lua",
 			"src/host/lua-5.1.4/etc/*.c",
-            "src/host/hgtip.h"
+			"src/host/hgtip.h",
+			"packages/**",
+			"samples/**",
+			"tests/**",
 		}
 
 		configuration "Debug"
@@ -142,7 +145,7 @@ end
 
 		configuration {"windows", "Publish"}
 			postbuildcommands { 'ollisign.cmd -a "$(TargetPath)" "https://bitbucket.org/windirstat/premake-stable" "premake4"' }
-			defines     "HAVE_HGTIP"
+			defines     { "HAVE_HGTIP", "PREMAKE_VERSION=4.4-wds"}
 
 		configuration "linux or bsd"
 			defines     { "LUA_USE_POSIX", "LUA_USE_DLOPEN" }

@@ -12,11 +12,25 @@
 #include <CoreFoundation/CFBundle.h>
 #endif
 
-#ifdef HAVE_HGTIP
+#ifndef PPSX
+#   define PPSX(s) #s
+#endif
+#ifndef PPS
+#   define PPS(s) PPSX(s)
+#endif
+#ifndef PREMAKE_VERSION
+#   define PREMAKE_VERSION 4.4-wds
+#endif
+
+#if defined(HAVE_HGTIP)
 #   include "hgtip.h"
-#   define VERSION        HG_TIP_ID ":" HG_TIP_REVNO
+#   define HG_VERSION     HG_TIP_ID ":" HG_TIP_REVNO
+#endif
+
+#if defined(HG_VERSION)
+#    define VERSION        PPS(PREMAKE_VERSION) " " HG_VERSION
 #else
-#define VERSION        "HEAD"
+#    define VERSION        PPS(PREMAKE_VERSION)
 #endif
 #define COPYRIGHT      "Copyright (C) 2002-2013 Jason Perkins and the Premake Project"
 #define ERROR_MESSAGE  "%s\n"
@@ -326,11 +340,21 @@ static int load_file_scripts(lua_State* L)
 
 	if (lua_isnil(L, -1))
 	{
-		printf(ERROR_MESSAGE,
-			"Unable to find _premake_main.lua; use /scripts option when in debug mode!\n"
-			"Please refer to the documentation (or build in release mode instead)."
-		);
-		return !OKAY;
+		/* call os.pathsearch() to locate _premake_main.lua */
+		lua_pushcfunction(L, os_pathsearch);
+		lua_pushstring(L, "_premake_main.lua");
+		lua_pushstring(L, "src");
+		lua_pushstring(L, getenv("PREMAKE_PATH"));
+		lua_call(L, 3, 1);
+
+		if (lua_isnil(L, -1))
+		{
+			printf(ERROR_MESSAGE,
+				"Unable to find _premake_main.lua; use --scripts option when in debug mode!\n"
+				"Please refer to the documentation (or build in release mode instead)."
+			);
+			return !OKAY;
+		}
 	}
 
 	/* run the bootstrapping script */
