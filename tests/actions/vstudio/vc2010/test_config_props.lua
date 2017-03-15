@@ -89,3 +89,16 @@
 	</PropertyGroup>
 		]]
 	end
+
+	function suite.structureIsCorrect_onDefaultValues_on2017()
+		_ACTION = "vs2017"
+		prepare()
+		test.capture [[
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+		<ConfigurationType>Application</ConfigurationType>
+		<UseDebugLibraries>true</UseDebugLibraries>
+		<CharacterSet>MultiByte</CharacterSet>
+		<PlatformToolset>v141</PlatformToolset>
+	</PropertyGroup>
+		]]
+	end

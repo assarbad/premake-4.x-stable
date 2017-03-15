@@ -76,6 +76,14 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 		]]
+--[[
+VS 2013 seems to add:
+
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+
+which don't seem to be mandatory, though.
+]]
 	end
 
 	function suite.On2015()
@@ -83,12 +91,29 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 		prepare()
 		test.capture [[
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2015
+# Visual Studio 14
 		]]
 --[[
-VS2015 seems to add:
+VS 2015 seems to add:
 
 VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+
+which don't seem to be mandatory, though.
+]]
+	end
+
+	function suite.On2017()
+		_ACTION = "vs2017"
+		prepare()
+		test.capture [[
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+		]]
+--[[
+VS 2017 seems to add:
+
+VisualStudioVersion = 15.0.26228.4
 MinimumVisualStudioVersion = 10.0.40219.1
 
 which don't seem to be mandatory, though.
