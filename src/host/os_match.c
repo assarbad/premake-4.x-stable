@@ -36,9 +36,16 @@ int os_matchstart(lua_State* L)
 {
 	const char* mask = luaL_checkstring(L, 1);
 	MatchInfo* m = (MatchInfo*)malloc(sizeof(MatchInfo));
-	m->handle = FindFirstFile(mask, &m->entry); /* error handling happens in os_matchnext() below */
-	m->is_first = 1;
-	lua_pushlightuserdata(L, m);
+	if (m)
+	{
+		m->handle = FindFirstFile(mask, &m->entry); /* error handling happens in os_matchnext() below */
+		m->is_first = 1;
+		lua_pushlightuserdata(L, m);
+	}
+	else
+	{
+		lua_pushnil(L);
+	}
 	return 1;
 }
 

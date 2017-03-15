@@ -41,3 +41,4 @@ intermediate/**
 premake4.exe
 src/host/hgtip.h
 *.asc
+.vs/**
