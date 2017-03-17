@@ -5,7 +5,7 @@
 About
 -----
 This is a friendly fork of `premake/premake-4.x
-<https://bitbucket.org/premake/premake-4.x/>`_.
+<https://github.com/premake/premake-4.x>`_.
 
 I usually send pull requests to Jason, but I realize that not all of
 my changes may be suitable or desirable. So I keep a separate branch.
