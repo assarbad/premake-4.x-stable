@@ -12,14 +12,14 @@
 --
 
 	premake.action.list = { }
-	
+
 
 --
 -- Register a new action.
 --
 -- @param a
 --    The new action object.
--- 
+--
 
 	function premake.action.add(a)
 		-- validate the action object, at least a little bit
@@ -29,13 +29,13 @@
 				missing = field
 			end
 		end
-		
+
 		if (missing) then
 			error("action needs a " .. missing, 3)
 		end
 
 		-- add it to the master list
-		premake.action.list[a.trigger] = a		
+		premake.action.list[a.trigger] = a
 	end
 
 
@@ -60,7 +60,7 @@
 				end
 			end
 		end
-		
+
 		if a.execute then
 			a.execute()
 		end
@@ -77,8 +77,8 @@
 	function premake.action.current()
 		return premake.action.get(_ACTION)
 	end
-	
-	
+
+
 --
 -- Retrieve an action by name.
 --
@@ -104,7 +104,7 @@
 			table.insert(keys, action.trigger)
 		end
 		table.sort(keys)
-		
+
 		local i = 0
 		return function()
 			i = i + 1

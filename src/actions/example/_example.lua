@@ -5,20 +5,20 @@
 	premake.example = { }
 	local example = premake.example
 
-	
+
 -- The description of the action. Note that only the first three fields are required;
 -- you can remove any of the additional fields that are not required by your action.
 
-	newaction 
+	newaction
 	{
-		-- The trigger is what needs to be typed on the command line to cause 
+		-- The trigger is what needs to be typed on the command line to cause
 		-- this action this run (premake4 example)
 		trigger = "example",
-		
+
 		-- The short name is used when this toolset name needs to be shown to
 		-- the user, such as in status or error messages
 		shortname = "Super Studio 3000",
-		
+
 		-- The description is shown in the help text (premake4 /help)
 		description = "An example action that prints simple text files",
 
@@ -42,22 +42,22 @@
 			dotnet = { "mono", "msnet", "pnet" },
 		},
 
-		
+
 		-- This function is called during state validation. If your action has some
 		-- special requirements you can check them here and error if necessary.
-		
-		
+
+
 		oncheckproject = function(prj)
 			-- if this_project_is_no_good(prj) then
 			--    error("Project " .. prj.name .. " is no good", 0)
 			-- end
 		end,
-		
+
 
 		-- These functions will get called for each solution and project. The function
 		-- premake.generate() creates a file for you in the correct place, taking into
 		-- account any location information specified in the script. The sequence "%%"
-		-- will be replaced by the solution/project name. The last parameter is the 
+		-- will be replaced by the solution/project name. The last parameter is the
 		-- function that will actually do the work of generating the file contents.
 
 		onsolution = function(sln)
@@ -81,7 +81,7 @@
 		oncleansolution = function(sln)
 			premake.clean.file(sln, "%%.sln.txt")
 		end,
-		
+
 		oncleanproject  = function(prj)
 			if premake.isdotnetproject(prj) then
 				premake.clean.file(prj, "%%.csprj.txt")
@@ -89,7 +89,7 @@
 				premake.clean.file(prj, "%%.cprj.txt")
 			end
 		end,
-		
+
 		oncleantarget   = function(trg)
 			-- 'trg' is the path and base name of the target being cleaned,
 			-- like 'bin/debug/MyApplication'. So you might do something like:

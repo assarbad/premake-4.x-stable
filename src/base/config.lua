@@ -11,7 +11,7 @@
 	local config = premake.config
 
 
--- 
+--
 -- Determine if a configuration represents a "debug" or "release" build.
 -- This controls the runtime library selected for Visual Studio builds
 -- (and might also be useful elsewhere).
@@ -32,10 +32,10 @@
 
 --
 -- Determines if this configuration can be linked incrementally.
--- 
-	
+--
+
 	function premake.config.isincrementallink(cfg)
-		if cfg.kind == "StaticLib" 
+		if cfg.kind == "StaticLib"
 				or config.isoptimizedbuild(cfg.flags)
 				or cfg.flags.NoIncrementalLink then
 			return false
@@ -45,11 +45,11 @@
 
 
 --
--- Determine if this configuration uses one of the optimize flags. 
--- Optimized builds get different treatment, such as full linking 
+-- Determine if this configuration uses one of the optimize flags.
+-- Optimized builds get different treatment, such as full linking
 -- instead of incremental.
 --
-	
+
 	function premake.config.isoptimizedbuild(flags)
 		return flags.Optimize or flags.OptimizeSize or flags.OptimizeSpeed
 	end

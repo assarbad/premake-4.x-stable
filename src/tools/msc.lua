@@ -4,6 +4,6 @@
 -- Copyright (c) 2009 Jason Perkins and the Premake project
 --
 
-	
+
 	premake.msc = { }
 	premake.msc.namestyle = "windows"

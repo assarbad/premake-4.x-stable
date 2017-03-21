@@ -9,13 +9,13 @@
 
 	function cs2005.generate_user(prj)
 		io.eol = "\r\n"
-		
+
 		_p('<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">')
 		_p('  <PropertyGroup>')
-		
+
 		local refpaths = table.translate(prj.libdirs, function(v) return path.getabsolute(prj.location .. "/" .. v) end)
 		_p('    <ReferencePath>%s</ReferencePath>', path.translate(table.concat(refpaths, ";"), "\\"))
 		_p('  </PropertyGroup>')
 		_p('</Project>')
-		
+
 	end

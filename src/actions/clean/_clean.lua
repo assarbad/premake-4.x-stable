@@ -56,7 +56,7 @@
 				end
 			end
 		end,
-		
+
 		onproject = function(prj)
 			for action in premake.action.each() do
 				if action.oncleanproject then

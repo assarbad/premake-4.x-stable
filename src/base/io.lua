@@ -6,16 +6,16 @@
 
 
 --
--- Prepare to capture the output from all subsequent calls to io.printf(), 
+-- Prepare to capture the output from all subsequent calls to io.printf(),
 -- used for automated testing of the generators.
 --
 
 	function io.capture()
 		io.captured = ''
 	end
-	
-	
-	
+
+
+
 --
 -- Returns the captured text and stops capturing.
 --
@@ -25,8 +25,8 @@
 		io.captured = nil
 		return captured
 	end
-	
-	
+
+
 --
 -- Open an overload of the io.open() function, which will create any missing
 -- subdirectories in the filename if "mode" is set to writeable.
@@ -48,7 +48,7 @@
 
 
 
--- 
+--
 -- A shortcut for printing formatted output to an output stream.
 --
 
@@ -66,7 +66,7 @@
 		else
 			s = string.format(msg, unpack(arg))
 		end
-		
+
 		if io.captured then
 			io.captured = io.captured .. s .. io.eol
 		else

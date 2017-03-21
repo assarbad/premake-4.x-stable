@@ -9,7 +9,7 @@
 -- Built-in command line options
 --
 
-	newoption 
+	newoption
 	{
 		trigger     = "cc",
 		value       = "VALUE",
@@ -38,13 +38,13 @@
 		value       = "FILE",
 		description = "Read FILE as a Premake script; default is 'premake4.lua'"
 	}
-	
+
 	newoption
 	{
 		trigger     = "help",
 		description = "Display this information"
 	}
-		
+
 	newoption
 	{
 		trigger     = "os",
@@ -75,14 +75,14 @@
 			{ "xbox360",     "Xbox 360 (experimental)" },
 		}
 	}
-	
+
 	newoption
 	{
 		trigger     = "scripts",
 		value       = "path",
 		description = "Search for additional scripts on the given path"
 	}
-	
+
 	newoption
 	{
 		trigger     = "version",
@@ -94,4 +94,3 @@
 		trigger     = "generate_user",
 		description = "Generate (and remove when cleaning) .user VStudio files"
 	}
-	

@@ -16,7 +16,7 @@
 		if (prj.pchheader) then
 			pchheader = path.getrelative(prj.location, prj.pchheader)
 		end
-		
+
 		for fcfg in premake.project.eachfile(prj) do
 			_p(2,'<Unit filename="%s">', premake.esc(fcfg.name))
 			if fcfg.name ~= fcfg.vpath then
@@ -47,7 +47,7 @@
 					local args = ''
 					local sz = #cfg.debugenvs
 					for idx, v in ipairs(cfg.debugenvs) do
-						args = args .. 'set env ' .. v 
+						args = args .. 'set env ' .. v
 						if sz ~= idx then args = args .. '&#x0A;' end
 					end
 					_p(5,'<options additional_cmds_before="%s" />',args)
@@ -57,19 +57,19 @@
 			 error('Sorry at this moment there is no support for debug environment variables with this debugger and codeblocks')
 		end
 	end
-	
+
 --
 -- The main function: write out the project file.
 --
-	
+
 	function premake.codeblocks.cbp(prj)
 		-- alias the C/C++ compiler interface
 		local cc = premake.gettool(prj)
-		
+
 		_p('<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>')
 		_p('<CodeBlocks_project_file>')
 		_p(1,'<FileVersion major="1" minor="6" />')
-		
+
 		-- write project block header
 		_p(1,'<Project>')
 		_p(2,'<Option title="%s" />', premake.esc(prj.name))
@@ -82,20 +82,20 @@
 			if premake.platforms[platforms[i]].iscrosscompiler then
 				table.remove(platforms, i)
 			end
-		end 
-		
+		end
+
 		-- write configuration blocks
 		_p(2,'<Build>')
-		for _, platform in ipairs(platforms) do		
+		for _, platform in ipairs(platforms) do
 			for cfg in premake.eachconfig(prj, platform) do
 				_p(3,'<Target title="%s">', premake.esc(cfg.longname))
-				
+
 				_p(4,'<Option output="%s" prefix_auto="0" extension_auto="0" />', premake.esc(cfg.buildtarget.fullpath))
-				
+
 				if cfg.debugdir then
 					_p(4,'<Option working_dir="%s" />', premake.esc(cfg.debugdir))
 				end
-				
+
 				_p(4,'<Option object_output="%s" />', premake.esc(cfg.objectsdir))
 
 				-- identify the type of binary
@@ -103,7 +103,7 @@
 				_p(4,'<Option type="%d" />', types[cfg.kind])
 
 				_p(4,'<Option compiler="%s" />', _OPTIONS.cc)
-				
+
 				if (cfg.kind == "SharedLib") then
 					_p(4,'<Option createDefFile="0" />')
 					_p(4,'<Option createStaticLib="%s" />', iif(cfg.flags.NoImportLib, 0, 1))
@@ -123,7 +123,7 @@
 				end
 				_p(4,'</Compiler>')
 				-- end compiler block --
-				
+
 				-- begin linker block --
 				_p(4,'<Linker>')
 				for _,flag in ipairs(table.join(cc.getldflags(cfg), cfg.linkoptions)) do
@@ -137,7 +137,7 @@
 				end
 				_p(4,'</Linker>')
 				-- end linker block --
-				
+
 				-- begin resource compiler block --
 				if premake.findfile(cfg, ".rc") then
 					_p(4,'<ResourceCompiler>')
@@ -150,7 +150,7 @@
 					_p(4,'</ResourceCompiler>')
 				end
 				-- end resource compiler block --
-				
+
 				-- begin build steps --
 				if #cfg.prebuildcommands > 0 or #cfg.postbuildcommands > 0 then
 					_p(4,'<ExtraCommands>')
@@ -164,14 +164,14 @@
 					_p(4,'</ExtraCommands>')
 				end
 				-- end build steps --
-				
+
 				_p(3,'</Target>')
 			end
 		end
 		_p(2,'</Build>')
-		
+
 		codeblocks.files(prj)
-		
+
 		_p(2,'<Extensions>')
         for _, platform in ipairs(platforms) do
 			for cfg in premake.eachconfig(prj, platform) do
@@ -185,5 +185,5 @@
 		_p(1,'</Project>')
 		_p('</CodeBlocks_project_file>')
 		_p('')
-		
+
 	end

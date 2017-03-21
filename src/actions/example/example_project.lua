@@ -1,6 +1,6 @@
 -- An example project generator; see _example.lua for action description
 
--- 
+--
 -- The project generation function, attached to the action in _example.lua.
 -- By now, premake.generate() has created the project file using the name
 -- provided in _example.lua, and redirected input to this new file.
@@ -9,7 +9,7 @@
 	function premake.example.project(prj)
 		-- If necessary, set an explicit line ending sequence
 		-- io.eol = '\r\n'
-	
+
 		-- Let's start with a header
 		_p('-- Example project file version 1.0')
 		_p('Name: %s', prj.name)
@@ -18,7 +18,7 @@
 		_p('ID: {%s}', prj.uuid)
 		_p('')
 
-		
+
 		-- List the build configurations, and the settings for each
 		for cfg in premake.eachconfig(prj) do
 			_p('Configuration %s:', cfg.name)
@@ -42,13 +42,13 @@
 			end
 			_p(2, 'Options: %s', table.concat(cfg.buildoptions, " "))
 			_p('')
-			
+
 			_p(1, 'Linking:')
 			_p(2, 'Library paths: %s', table.concat(cfg.libdirs, ";"))
 			_p(2, 'Options: %s', table.concat(cfg.linkoptions, " "))
 			_p(2, 'Libraries: %s', table.concat(premake.getlinks(cfg, "all", "fullpath")))
 			_p('')
-			
+
 			if #cfg.prebuildcommands > 0 then
 				_p(1, 'Prebuild commands:')
 				for _, cmd in ipairs(cfg.prebuildcommands) do
@@ -56,7 +56,7 @@
 				end
 				_p('')
 			end
-			
+
 			if #cfg.prelinkcommands > 0 then
 				_p(1, 'Prelink commands:')
 				for _, cmd in ipairs(cfg.prelinkcommands) do
@@ -64,7 +64,7 @@
 				end
 				_p('')
 			end
-			
+
 			if #cfg.postbuildcommands > 0 then
 				_p(1, 'Postbuild commands:')
 				for _, cmd in ipairs(cfg.postbuildcommands) do
@@ -74,7 +74,7 @@
 			end
 		end
 
-		
+
 		-- List out the folders and files that make up the build
 		local tr = premake.project.buildsourcetree(prj)
 		premake.tree.sort(tr)
@@ -82,10 +82,10 @@
 			onbranch = function(node, depth)
 				_p(depth, path.getname(node.name) .. "/")
 			end,
-			
+
 			onleaf = function(node, depth)
 				_p(depth, path.getname(node.name))
 			end
 		})
-		
+
 	end

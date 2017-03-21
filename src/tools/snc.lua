@@ -4,9 +4,9 @@
 -- Copyright (c) 2010 Jason Perkins and the Premake project
 --
 
-	
+
 	premake.snc = { }
-	
+
 
 -- TODO: Will cfg.system == "windows" ever be true for SNC? If
 -- not, remove the conditional blocks that use this test.
@@ -18,8 +18,8 @@
 	premake.snc.cc     = "snc"
 	premake.snc.cxx    = "g++"
 	premake.snc.ar     = "ar"
-	
-	
+
+
 --
 -- Translation of Premake flags into SNC flags
 --
@@ -35,13 +35,13 @@
 		NoExceptions   = "", -- No exceptions is the default in the SNC compiler.
 		NoRTTI         = "-Xc-=rtti",
 	}
-	
-	
+
+
 --
 -- Map platforms to flags
 --
 
-	premake.snc.platforms = 
+	premake.snc.platforms =
 	{
 		PS3 = {
 			cc         = "ppu-lv2-g++",
@@ -52,7 +52,7 @@
 	}
 
 	local platforms = premake.snc.platforms
-	
+
 
 --
 -- Returns a list of compiler flags, based on the supplied configuration.
@@ -70,15 +70,15 @@
 		if cfg.kind == "SharedLib" then
 			table.insert(result, "-fPIC")
 		end
-		
-		return result		
+
+		return result
 	end
-	
+
 	function premake.snc.getcxxflags(cfg)
 		local result = table.translate(cfg.flags, cxxflags)
 		return result
 	end
-	
+
 
 
 --
@@ -87,29 +87,29 @@
 
 	function premake.snc.getldflags(cfg)
 		local result = { }
-		
+
 		if not cfg.flags.Symbols then
 			table.insert(result, "-s")
 		end
-	
+
 		if cfg.kind == "SharedLib" then
-			table.insert(result, "-shared")				
+			table.insert(result, "-shared")
 			if not cfg.flags.NoImportLib then
 				table.insert(result, '-Wl,--out-implib="' .. cfg.linktarget.fullpath .. '"')
 			end
 		end
-		
+
 		local platform = platforms[cfg.platform]
 		table.insert(result, platform.flags)
 		table.insert(result, platform.ldflags)
-		
+
 		return result
 	end
-		
+
 
 --
 -- Return a list of library search paths. Technically part of LDFLAGS but need to
--- be separated because of the way Visual Studio calls SNC for the PS3. See bug 
+-- be separated because of the way Visual Studio calls SNC for the PS3. See bug
 -- #1729227 for background on why library paths must be split.
 --
 
@@ -120,12 +120,12 @@
 		end
 		return result
 	end
-	
+
 
 
 	--
-	-- This is poorly named: returns a list of linker flags for external 
-	-- (i.e. system, or non-sibling) libraries. See bug #1729227 for 
+	-- This is poorly named: returns a list of linker flags for external
+	-- (i.e. system, or non-sibling) libraries. See bug #1729227 for
 	-- background on why the path must be split.
 	--
 
@@ -136,8 +136,8 @@
 		end
 		return result
 	end
-	
-	
+
+
 
 --
 -- Decorate defines for the SNC command line.
@@ -152,7 +152,7 @@
 	end
 
 
-	
+
 --
 -- Decorate include file search paths for the SNC command line.
 --

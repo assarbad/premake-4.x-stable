@@ -8,14 +8,14 @@
 	local vstudio = premake.vstudio
 	local cs2002 = premake.vstudio.cs2002
 
-	
+
 --
 -- Figure out what elements a particular file need in its item block,
 -- based on its build action and any related files in the project.
--- 
+--
 
 	local function getelements(prj, action, fname)
-	
+
 		if action == "Compile" and fname:endswith(".cs") then
 			return "SubTypeCode"
 		end
@@ -28,7 +28,7 @@
 				return "Dependency", testname
 			end
 		end
-		
+
 		return "None"
 	end
 
@@ -76,7 +76,7 @@
 		_p(1,'>')
 
 		_p(2,'<Build>')
-		
+
 		-- Write out project-wide settings
 		_p(3,'<Settings')
 		_p(4,'ApplicationIcon = ""')
@@ -102,7 +102,7 @@
 		_p(4,'StartupObject = ""')
 		_p(3,'>')
 
-		-- Write out configuration blocks		
+		-- Write out configuration blocks
 		for cfg in premake.eachconfig(prj) do
 			_p(4,'<Config')
 			_p(5,'Name = "%s"', premake.esc(cfg.name))
@@ -148,7 +148,7 @@
 			_p(4,'/>')
 		end
 		_p(3,'</References>')
-		
+
 		_p(2,'</Build>')
 
 		-- List source files
@@ -157,7 +157,7 @@
 		cs2002.Files(prj)
 		_p(3,'</Include>')
 		_p(2,'</Files>')
-		
+
 		_p(1,'</CSHARP>')
 		_p('</VisualStudioProject>')
 

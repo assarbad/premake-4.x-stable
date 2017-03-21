@@ -12,11 +12,11 @@
 		_p('<VisualStudioProject>')
 		_p(1,'<CSHARP>')
 		_p(2,'<Build>')
-		
+
 		-- Visual Studio wants absolute paths
 		local refpaths = table.translate(prj.libdirs, function(v) return path.getabsolute(prj.location .. "/" .. v) end)
 		_p(3,'<Settings ReferencePath = "%s">', path.translate(table.concat(refpaths, ";"), "\\"))
-		
+
 		for cfg in premake.eachconfig(prj) do
 			_p(4,'<Config')
 			_p(5,'Name = "%s"', premake.esc(cfg.name))
@@ -35,7 +35,7 @@
 			_p(5,'StartWithIE = "false"')
 			_p(4,'/>')
 		end
-		
+
 		_p(3,'</Settings>')
 		_p(2,'</Build>')
 		_p(2,'<OtherProjectSettings')
@@ -45,8 +45,8 @@
 		_p(3,'ProjectView = "ProjectFiles"')
 		_p(3,'ProjectTrust = "0"')
 		_p(2,'/>')
-		
+
 		_p(1,'</CSHARP>')
 		_p('</VisualStudioProject>')
-		
+
 	end

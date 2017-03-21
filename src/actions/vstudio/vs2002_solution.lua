@@ -16,7 +16,7 @@
 		sln.vstudio_configs = premake.vstudio.buildconfigs(sln)
 
 		_p('Microsoft Visual Studio Solution File, Format Version 7.00')
-		
+
 		-- Write out the list of project entries
 		for prj in premake.solution.eachproject(sln) do
 			local projpath = path.translate(path.getrelative(sln.location, vstudio.projectfile(prj)))
@@ -33,7 +33,7 @@
 
 		_p(1,'GlobalSection(ProjectDependencies) = postSolution')
 		_p(1,'EndGlobalSection')
-		
+
 		_p(1,'GlobalSection(ProjectConfiguration) = postSolution')
 		for prj in premake.solution.eachproject(sln) do
 			for _, cfgname in ipairs(sln.configurations) do
@@ -46,7 +46,6 @@
 		_p(1,'EndGlobalSection')
 		_p(1,'GlobalSection(ExtensibilityAddIns) = postSolution')
 		_p(1,'EndGlobalSection')
-		
+
 		_p('EndGlobal')
 	end
-	

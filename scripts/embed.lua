@@ -25,7 +25,7 @@
 
 		-- escape line feeds
 		s = s:gsub("\n", "\\n")
-		
+
 		-- escape double quote marks
 		s = s:gsub("\"", "\\\"")
 		return s
@@ -88,7 +88,7 @@
 			fnames = fnames .. "\n" .. "\t\"@" .. fn .. "\","
 			writefile(out, fn, s)
 		end
-		
+
 		out:write("\t0\n};\n\n");
 		out:write(fnames);
 		out:write("\n\t0\n};\n");

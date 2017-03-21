@@ -186,8 +186,8 @@
 
 
 --
--- This is poorly named: returns a list of linker flags for external 
--- (i.e. system, or non-sibling) libraries. See bug #1729227 for 
+-- This is poorly named: returns a list of linker flags for external
+-- (i.e. system, or non-sibling) libraries. See bug #1729227 for
 -- background on why the path must be split.
 --
 

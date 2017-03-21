@@ -25,12 +25,12 @@
 		-- add to master list keyed by both name and index
 		table.insert(premake.solution.list, sln)
 		premake.solution.list[name] = sln
-			
+
 		-- attach a type descriptor
 		setmetatable(sln, { __type="solution" })
 
 		sln.name           = name
-		sln.basedir        = os.getcwd()			
+		sln.basedir        = os.getcwd()
 		sln.projects       = { }
 		sln.blocks         = { }
 		sln.configurations = { }
@@ -106,7 +106,7 @@
 		-- the global (not configuration specific) settings collapsed
 		local prj = sln.projects[idx]
 		local cfg = premake.getconfig(prj)
-		
+
 		-- root configuration doesn't have a name; use the project's
 		cfg.name = prj.name
 		return cfg

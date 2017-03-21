@@ -22,7 +22,7 @@
 		for prj in premake.solution.eachproject(sln) do
 			local projpath = path.translate(path.getrelative(sln.location, vstudio.projectfile(prj)))
 			_p('Project("{%s}") = "%s", "%s", "{%s}"', vstudio.tool(prj), prj.name, projpath, prj.uuid)
-			
+
 			local deps = premake.getdependencies(prj)
 			if #deps > 0 then
 				_p('\tProjectSection(ProjectDependencies) = postProject')
@@ -31,7 +31,7 @@
 				end
 				_p('\tEndProjectSection')
 			end
-			
+
 			_p('EndProject')
 		end
 
@@ -41,10 +41,10 @@
 			_p('\t\t%s = %s', cfgname, cfgname)
 		end
 		_p('\tEndGlobalSection')
-		
+
 		_p('\tGlobalSection(ProjectDependencies) = postSolution')
 		_p('\tEndGlobalSection')
-		
+
 		_p('\tGlobalSection(ProjectConfiguration) = postSolution')
 		for prj in premake.solution.eachproject(sln) do
 			for _, cfgname in ipairs(sln.configurations) do
@@ -58,6 +58,6 @@
 		_p('\tEndGlobalSection')
 		_p('\tGlobalSection(ExtensibilityAddIns) = postSolution')
 		_p('\tEndGlobalSection')
-		
+
 		_p('EndGlobal')
 	end

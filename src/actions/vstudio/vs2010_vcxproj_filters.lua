@@ -6,7 +6,7 @@
 
 	local vc2010 = premake.vstudio.vc2010
 	local project = premake.project
-	
+
 
 --
 -- The first portion of the filters file assigns unique IDs to each
@@ -28,7 +28,7 @@
 					filterfound = true
 					_p(1,'<ItemGroup>')
 				end
-				
+
 				path = path .. folders[i]
 
 				-- have I seen this path before?
@@ -43,7 +43,7 @@
 				path = path .. "\\"
 			end
 		end
-		
+
 		if filterfound then
 			_p(1,'</ItemGroup>')
 		end
@@ -52,7 +52,7 @@
 
 --
 -- The second portion of the filters file assigns filters to each source
--- code file, as needed. Section is one of "ClCompile", "ClInclude", 
+-- code file, as needed. Section is one of "ClCompile", "ClInclude",
 -- "ResourceCompile", or "None".
 --
 
@@ -66,8 +66,8 @@
 					filter = path.getdirectory(file.vpath)
 				else
 					filter = path.getdirectory(file.name)
-				end				
-				
+				end
+
 				if filter ~= "." then
 					_p(2,'<%s Include=\"%s\">', section, path.translate(file.name, "\\"))
 						_p(3,'<Filter>%s</Filter>', path.translate(filter, "\\"))
@@ -84,7 +84,7 @@
 --
 -- Output the VC2010 filters file
 --
-	
+
 	function vc2010.generate_filters(prj)
 		io.indent = "  "
 		vc2010.header()

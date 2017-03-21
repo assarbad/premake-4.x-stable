@@ -16,8 +16,8 @@ end
 function xcode4.workspace_file_ref(prj)
 
 		local projpath = path.getrelative(prj.solution.location, prj.location)
-		if projpath == '.' then projpath = '' 
-		else projpath = projpath ..'/' 
+		if projpath == '.' then projpath = ''
+		else projpath = projpath ..'/'
 		end
 		_p(1,'<FileRef')
 			_p(2,'location = "group:%s">',projpath .. prj.name .. '.xcodeproj')
@@ -32,7 +32,7 @@ function xcode4.workspace_generate(sln)
 	for prj in premake.solution.eachproject(sln) do
 		xcode4.workspace_file_ref(prj)
 	end
-	
+
 	xcode4.workspace_tail()
 end
 
