@@ -41,7 +41,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="1"
 				AdditionalIncludeDirectories="src\host\lua-5.1.4\src"
-				PreprocessorDefinitions="NDEBUG;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE"
+				PreprocessorDefinitions="USE_KECCAK;NDEBUG;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE"
 				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
@@ -57,7 +57,7 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="NDEBUG;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE"
+				PreprocessorDefinitions="USE_KECCAK;NDEBUG;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE"
 				AdditionalIncludeDirectories="src\host\lua-5.1.4\src"
 			/>
 			<Tool
@@ -127,7 +127,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="src\host\lua-5.1.4\src"
-				PreprocessorDefinitions="_DEBUG;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE"
+				PreprocessorDefinitions="USE_KECCAK;_DEBUG;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -144,7 +144,7 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="_DEBUG;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE"
+				PreprocessorDefinitions="USE_KECCAK;_DEBUG;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE"
 				AdditionalIncludeDirectories="src\host\lua-5.1.4\src"
 			/>
 			<Tool
@@ -213,7 +213,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="1"
 				AdditionalIncludeDirectories="src\host\lua-5.1.4\src"
-				PreprocessorDefinitions="NDEBUG;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;HAVE_HGTIP;PREMAKE_VERSION=4.4-wds"
+				PreprocessorDefinitions="USE_KECCAK;NDEBUG;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;HAVE_HGTIP;PREMAKE_VERSION=4.4-wds"
 				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
@@ -229,7 +229,7 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="NDEBUG;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;HAVE_HGTIP;PREMAKE_VERSION=4.4-wds"
+				PreprocessorDefinitions="USE_KECCAK;NDEBUG;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;HAVE_HGTIP;PREMAKE_VERSION=4.4-wds"
 				AdditionalIncludeDirectories="src\host\lua-5.1.4\src"
 			/>
 			<Tool
@@ -481,6 +481,10 @@
 						RelativePath="src\actions\vstudio\vs2015.lua"
 						>
 					</File>
+					<File
+						RelativePath="src\actions\vstudio\vs2017.lua"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="xcode"
@@ -585,6 +589,10 @@
 				Name="host"
 				Filter=""
 				>
+				<File
+					RelativePath="src\host\keccak.c"
+					>
+				</File>
 				<Filter
 					Name="lua-5.1.4"
 					Filter=""

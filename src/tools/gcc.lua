@@ -85,7 +85,7 @@
 			ldflags		= "-L$(LIBOGC_LIB) $(MACHDEP)",
 			cfgsettings = [[
   ifeq ($(strip $(DEVKITPPC)),)
-    $(error "DEVKITPPC environment variable is not set")'
+	$(error "DEVKITPPC environment variable is not set")'
   endif
   include $(DEVKITPPC)/wii_rules']],
 		},

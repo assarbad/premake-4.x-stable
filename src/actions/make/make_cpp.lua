@@ -243,8 +243,8 @@
 		_p('  ALL_CXXFLAGS  += $(CXXFLAGS) $(ALL_CFLAGS)%s', make.list(cc.getcxxflags(cfg)))
 
 		_p('  ALL_RESFLAGS  += $(RESFLAGS) $(DEFINES) $(INCLUDES)%s',
-		        make.list(table.join(cc.getdefines(cfg.resdefines),
-		                                cc.getincludedirs(cfg.resincludedirs), cfg.resoptions)))
+				make.list(table.join(cc.getdefines(cfg.resdefines),
+										cc.getincludedirs(cfg.resincludedirs), cfg.resoptions)))
 	end
 
 

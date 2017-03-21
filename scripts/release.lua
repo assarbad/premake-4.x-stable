@@ -39,7 +39,7 @@ function dorelease()
 	local version = _ARGS[1]
 	local kind = _ARGS[2]
 
-    local pkgname = "premake-" .. version
+	local pkgname = "premake-" .. version
 
 
 --

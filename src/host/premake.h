@@ -79,6 +79,9 @@ int os_pathsearch(lua_State* L);
 int os_rmdir(lua_State* L);
 int os_stat(lua_State* L);
 int os_uuid(lua_State* L);
+#ifdef USE_KECCAK
+int os_str2uuid(lua_State* L);
+#endif
 int string_endswith(lua_State* L);
 
 

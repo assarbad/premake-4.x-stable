@@ -81,6 +81,9 @@ static const luaL_Reg os_functions[] = {
 	{ "rmdir",       os_rmdir       },
 	{ "stat",        os_stat        },
 	{ "uuid",        os_uuid        },
+#ifdef USE_KECCAK
+	{ "str2uuid",    os_str2uuid    },
+#endif
 	{ NULL, NULL }
 };
 

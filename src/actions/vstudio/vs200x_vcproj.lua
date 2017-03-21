@@ -148,8 +148,8 @@
 							_p(depth, '\t>')
 							_p(depth, '\t<Tool')
 							_p(depth, '\t\tName="%s"', iif(cfg.system == "Xbox360",
-							                                 "VCCLX360CompilerTool",
-							                                 "VCCLCompilerTool"))
+															"VCCLX360CompilerTool",
+															"VCCLCompilerTool"))
 							if needsCompileAs then
 								_p(depth, '\t\tCompileAs="%s"', iif(path.iscfile(fname), 1, 2))
 							end
@@ -157,8 +157,8 @@
 							if usePCH then
 								if cfg.system == "PS3" then
 									local options = table.join(premake.snc.getcflags(cfg),
-									                           premake.snc.getcxxflags(cfg),
-									                           cfg.buildoptions)
+																premake.snc.getcxxflags(cfg),
+																cfg.buildoptions)
 									options = table.concat(options, " ");
 									options = options .. ' --create_pch="$(IntDir)/$(TargetName).pch"'
 									_p(depth, '\t\tAdditionalOptions="%s"', premake.esc(options))
@@ -212,9 +212,9 @@
 		else
 			-- Edit-and-continue does't work for some configurations
 			if cfg.flags.NoEditAndContinue or
-			   vc200x.optimization(cfg) ~= 0 or
-			   cfg.flags.Managed or
-			   cfg.platform == "x64" then
+					vc200x.optimization(cfg) ~= 0 or
+					cfg.flags.Managed or
+					cfg.platform == "x64" then
 				return 3
 			else
 				return 4

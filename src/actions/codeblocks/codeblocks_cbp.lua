@@ -54,7 +54,7 @@
 				_p(4,'</remote_debugging>')
 			_p(3,'</debugger>')
 		else
-			 error('Sorry at this moment there is no support for debug environment variables with this debugger and codeblocks')
+			error('Sorry at this moment there is no support for debug environment variables with this debugger and codeblocks')
 		end
 	end
 
@@ -173,7 +173,7 @@
 		codeblocks.files(prj)
 
 		_p(2,'<Extensions>')
-        for _, platform in ipairs(platforms) do
+		for _, platform in ipairs(platforms) do
 			for cfg in premake.eachconfig(prj, platform) do
 				if cfg.debugenvs and #cfg.debugenvs > 0 then
 					premake.codeblocks.debugenvs(cfg)

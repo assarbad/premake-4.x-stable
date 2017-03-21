@@ -757,46 +757,46 @@
 			error("no active solution", 2)
 		end
 
-  		-- if this is a new project, or the project in that slot doesn't have a usage, create it
-  		if((not sln.projects[name]) or
-  			((not sln.projects[name].usage) and (not sln.projects[name].usageProj))) then
-  			premake.CurrentContainer = createproject(name, sln, true)
-  		else
-  			premake.CurrentContainer = iff(sln.projects[name].usage,
-  				sln.projects[name], sln.projects[name].usageProj)
-  		end
-
-  		-- add an empty, global configuration to the project
-  		configuration { }
-
-  		return premake.CurrentContainer
-  	end
-
-  	function project(name)
-  		if (not name) then
-  			--Only return non-usage projects
-  			if(type(premake.CurrentContainer) ~= "project") then return nil end
-  			if(premake.CurrentContainer.usage) then return nil end
-  			return premake.CurrentContainer
+		-- if this is a new project, or the project in that slot doesn't have a usage, create it
+		if((not sln.projects[name]) or
+			((not sln.projects[name].usage) and (not sln.projects[name].usageProj))) then
+			premake.CurrentContainer = createproject(name, sln, true)
+		else
+			premake.CurrentContainer = iff(sln.projects[name].usage,
+				sln.projects[name], sln.projects[name].usageProj)
 		end
 
-  		-- identify the parent solution
-  		local sln
-  		if (type(premake.CurrentContainer) == "project") then
-  			sln = premake.CurrentContainer.solution
-  		else
-  			sln = premake.CurrentContainer
-  		end
-  		if (type(sln) ~= "solution") then
-  			error("no active solution", 2)
-  		end
+		-- add an empty, global configuration to the project
+		configuration { }
 
-  		-- if this is a new project, or the old project is a usage project, create it
-  		if((not sln.projects[name]) or sln.projects[name].usage) then
-  			premake.CurrentContainer = createproject(name, sln)
-  		else
-  			premake.CurrentContainer = sln.projects[name];
-  		end
+		return premake.CurrentContainer
+	end
+
+	function project(name)
+		if (not name) then
+			--Only return non-usage projects
+			if(type(premake.CurrentContainer) ~= "project") then return nil end
+			if(premake.CurrentContainer.usage) then return nil end
+			return premake.CurrentContainer
+		end
+
+		-- identify the parent solution
+		local sln
+		if (type(premake.CurrentContainer) == "project") then
+			sln = premake.CurrentContainer.solution
+		else
+			sln = premake.CurrentContainer
+		end
+		if (type(sln) ~= "solution") then
+			error("no active solution", 2)
+		end
+
+		-- if this is a new project, or the old project is a usage project, create it
+		if((not sln.projects[name]) or sln.projects[name].usage) then
+			premake.CurrentContainer = createproject(name, sln)
+		else
+			premake.CurrentContainer = sln.projects[name];
+		end
 
 		-- add an empty, global configuration to the project
 		configuration { }

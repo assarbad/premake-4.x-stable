@@ -39,3 +39,30 @@ int os_uuid(lua_State* L)
 	lua_pushstring(L, uuid);
 	return 1;
 }
+
+#ifdef USE_KECCAK
+void FIPS202_SHA3_256(const unsigned char *input, unsigned int inputByteLen, unsigned char *output);
+
+int os_str2uuid(lua_State* L)
+{
+	char uuid[38];
+	unsigned char bytes[32] = { 0 };
+	const char* str = luaL_checkstring(L, -1);
+
+	if (!str)
+	{
+		return os_uuid(L); /* generate a random UUID then */
+	}
+
+	FIPS202_SHA3_256((const unsigned char*)str, strlen(str), bytes);
+	sprintf(uuid, "%02X%02X%02X%02X-%02X%02X-%02X%02X-%02X%02X-%02X%02X%02X%02X%02X%02X",
+		bytes[0], bytes[2], bytes[4], bytes[6],
+		bytes[8], bytes[10],
+		bytes[12], bytes[14],
+		bytes[16], bytes[18],
+		bytes[20], bytes[22], bytes[24], bytes[26], bytes[28], bytes[30]);
+
+	lua_pushstring(L, uuid);
+	return 1;
+}
+#endif

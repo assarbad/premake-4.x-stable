@@ -43,7 +43,7 @@ do
 	premake.project.getbasename = function(prjname, pattern)
 		-- The below is used to insert the .vs(8|9|10|11|12|14) into the file names for projects and solutions
 		if _ACTION then
-			name_map = {vs2005 = "vs8", vs2008 = "vs9", vs2010 = "vs10", vs2012 = "vs11", vs2013 = "vs12", vs2015 = "vs14"}
+			name_map = {vs2005 = "vs8", vs2008 = "vs9", vs2010 = "vs10", vs2012 = "vs11", vs2013 = "vs12", vs2015 = "vs14", vs2017 = "vs15"}
 			if name_map[_ACTION] then
 				pattern = pattern:gsub("%%%%", "%%%%." .. name_map[_ACTION])
 			else
@@ -69,18 +69,43 @@ do
 		end
 		orig_generate(obj, filename, callback)
 	end
-end
-local function transformMN(input) -- transform the macro names for older Visual Studio versions
-	local new_map   = { vs2002 = 0, vs2003 = 0, vs2005 = 0, vs2008 = 0 }
-	local replacements = { Platform = "PlatformName", Configuration = "ConfigurationName" }
-	if new_map[action] ~= nil then
-		for k,v in pairs(replacements) do
-			if input:find(k) then
-				input = input:gsub(k, v)
+	-- We want to output the file with UTF-8 BOM
+	local orig_vc2010_header = premake.vstudio.vc2010.header
+	premake.vstudio.vc2010.header = function(targets)
+		io.capture()
+		orig_vc2010_header(targets)
+		local captured = io.endcapture()
+		io.write("\239\187\191")
+		io.write(captured)
+	end
+	-- Make sure we can generate XP-compatible projects for newer Visual Studio versions
+	local orig_vc2010_configurationPropertyGroup = premake.vstudio.vc2010.configurationPropertyGroup
+	premake.vstudio.vc2010.configurationPropertyGroup = function(cfg, cfginfo)
+		io.capture()
+		orig_vc2010_configurationPropertyGroup(cfg, cfginfo)
+		local captured = io.endcapture()
+		local toolsets = { vs2012 = "v110", vs2013 = "v120", vs2015 = "v140", vs2017 = "v141" }
+		local toolset = toolsets[_ACTION]
+		if toolset then
+			if _OPTIONS["xp"] then
+				toolset = toolset .. "_xp"
+				captured = captured:gsub("(</PlatformToolset>)", "_xp%1")
 			end
 		end
+		io.write(captured)
 	end
-	return input
+	function transformMN(input) -- transform the macro names for older Visual Studio versions
+		local new_map   = { vs2002 = 0, vs2003 = 0, vs2005 = 0, vs2008 = 0 }
+		local replacements = { Platform = "PlatformName", Configuration = "ConfigurationName" }
+		if new_map[action] ~= nil then
+			for k,v in pairs(replacements) do
+				if input:find(k) then
+					input = input:gsub(k, v)
+				end
+			end
+		end
+		return input
+	end
 end
 --
 -- Define the project. Put the release configuration first so it will be the
@@ -101,6 +126,7 @@ solution "Premake4"
 		objdir      (int_dir)
 		flags       { "No64BitChecks", "ExtraWarnings", "StaticRuntime" }
 		includedirs { "src/host/lua-5.1.4/src" }
+		defines     { "USE_KECCAK" }
 
 		files
 		{
@@ -190,6 +216,10 @@ solution "Premake4"
 		value   = "path",
 		description = "Set the output location for the generated files"
 	}
+    newoption {
+        trigger = "xp",
+        description = "Enable XP-compatible build for newer Visual Studio versions."
+    }
 
 
 

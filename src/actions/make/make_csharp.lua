@@ -11,9 +11,9 @@
 
 	local function getresourcefilename(cfg, fname)
 		if path.getextension(fname) == ".resx" then
-		    local name = cfg.buildtarget.basename .. "."
-		    local dir = path.getdirectory(fname)
-		    if dir ~= "." then
+			local name = cfg.buildtarget.basename .. "."
+			local dir = path.getdirectory(fname)
+			if dir ~= "." then
 				name = name .. path.translate(dir, ".") .. "."
 			end
 			return "$(OBJDIR)/" .. _MAKE.esc(name .. path.getbasename(fname)) .. ".resources"

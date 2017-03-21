@@ -307,7 +307,7 @@
 --   object    - return the project object of the dependency
 --
 
- 	function premake.getlinks(cfg, kind, part)
+	function premake.getlinks(cfg, kind, part)
 		-- if I'm building a list of link directories, include libdirs
 		local result = iif (part == "directory" and kind == "all", cfg.libdirs, {})
 
