@@ -103,7 +103,7 @@
 	end
 
 
-	function vc200x.individualSourceFile(prj, depth, fname)
+	function vc200x.individualSourceFile(prj, depth, fname, node)
 		-- handle file configuration stuff. This needs to be cleaned up and simplified.
 		-- configurations are cached, so this isn't as bad as it looks
 		for _, cfginfo in ipairs(prj.solution.vstudio_configs) do
@@ -176,7 +176,7 @@
 				_p(depth, '\t>')
 				depth = depth + 1
 
-				vc200x.individualSourceFile(prj, depth, fname)
+				vc200x.individualSourceFile(prj, depth, fname, node)
 
 				depth = depth - 1
 				_p(depth, '</File>')

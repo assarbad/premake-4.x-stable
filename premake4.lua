@@ -46,7 +46,7 @@ do
 		local tree = premake.tree
 		print "Magic happens for old premake4 versions faulty CompileAs handling for VS2010 and newer ..."
 		-- A boilerplate implementation
-		vc200x.individualSourceFile = function(prj, depth, fname)
+		vc200x.individualSourceFile = function(prj, depth, fname, node)
 			-- handle file configuration stuff. This needs to be cleaned up and simplified.
 			-- configurations are cached, so this isn't as bad as it looks
 			for _, cfginfo in ipairs(prj.solution.vstudio_configs) do
@@ -155,6 +155,48 @@ do
 				for _, file in ipairs(files) do
 					vc2010.individualSourceFile(prj, config_mappings, file)
 				end
+				_p(1,'</ItemGroup>')
+			end
+		end
+	end
+	-- Make UUID generation for filters deterministic
+	if os.str2uuid ~= nil then
+		local vc2010 = premake.vstudio.vc2010
+		vc2010.filteridgroup = function(prj)
+			local filters = { }
+			local filterfound = false
+
+			for file in project.eachfile(prj) do
+				-- split the path into its component parts
+				local folders = string.explode(file.vpath, "/", true)
+				local path = ""
+				for i = 1, #folders - 1 do
+					-- element is only written if there *are* filters
+					if not filterfound then
+						filterfound = true
+						_p(1,'<ItemGroup>')
+					end
+					
+					path = path .. folders[i]
+
+					-- have I seen this path before?
+					if not filters[path] then
+						print(prj.uuid or "nothing")
+						local seed = path .. (prj.uuid or "")
+						local deterministic_uuid = os.str2uuid(seed)
+						print("UUID = " .. deterministic_uuid)
+						filters[path] = true
+						_p(2, '<Filter Include="%s">', path)
+						_p(3, '<UniqueIdentifier>{%s}</UniqueIdentifier>', deterministic_uuid)
+						_p(2, '</Filter>')
+					end
+
+					-- prepare for the next subfolder
+					path = path .. "\\"
+				end
+			end
+			
+			if filterfound then
 				_p(1,'</ItemGroup>')
 			end
 		end
@@ -363,10 +405,10 @@ solution "Premake4"
 		value   = "path",
 		description = "Set the output location for the generated files"
 	}
-    newoption {
-        trigger = "xp",
-        description = "Enable XP-compatible build for newer Visual Studio versions."
-    }
+	newoption {
+		trigger = "xp",
+		description = "Enable XP-compatible build for newer Visual Studio versions."
+	}
 
 
 
