@@ -526,6 +526,21 @@
 		end
 	end
 
+	function vc2010.individualSourceFile(prj, config_mappings, file)
+		local configs = prj.solution.vstudio_configs
+		local translatedpath = path.translate(file.name, "\\")
+		_p(2,'<ClCompile Include=\"%s\">', translatedpath)
+		for _, cfginfo in ipairs(configs) do
+			if config_mappings[cfginfo] and translatedpath == config_mappings[cfginfo] then
+				_p(3,'<PrecompiledHeader '.. if_config_and_platform() .. '>Create</PrecompiledHeader>', premake.esc(cfginfo.name))
+				config_mappings[cfginfo] = nil  --only one source file per pch
+			end
+		end
+		if path.iscfile(file.name) ~= premake.project.iscproject(prj) then
+			_p(3,'<CompileAs>%s</CompileAs>', iif(path.iscfile(file.name), 'CompileAsC', 'CompileAsCpp'))
+		end
+		_p(2,'</ClCompile>')
+	end
 
 	function vc2010.compilerfilesgroup(prj)
 		local configs = prj.solution.vstudio_configs
@@ -541,15 +556,7 @@
 
 			_p(1,'<ItemGroup>')
 			for _, file in ipairs(files) do
-				local translatedpath = path.translate(file.name, "\\")
-				_p(2,'<ClCompile Include=\"%s\">', translatedpath)
-				for _, cfginfo in ipairs(configs) do
-					if config_mappings[cfginfo] and translatedpath == config_mappings[cfginfo] then
-						_p(3,'<PrecompiledHeader '.. if_config_and_platform() .. '>Create</PrecompiledHeader>', premake.esc(cfginfo.name))
-						config_mappings[cfginfo] = nil  --only one source file per pch
-					end
-				end
-				_p(2,'</ClCompile>')
+				vc2010.individualSourceFile(prj, config_mappings, file)
 			end
 			_p(1,'</ItemGroup>')
 		end

@@ -1,19 +1,19 @@
 --[[
-        This premake4.lua _requires_ windirstat/premake-stable to work properly.
-        If you don't want to use the code-signed build that can be found in the
-        download section of that project, you can build from the WDS-branch at:
+		This premake4.lua _requires_ windirstat/premake-stable to work properly.
+		If you don't want to use the code-signed build that can be found in the
+		download section of that project, you can build from the WDS-branch at:
 
-        https://bitbucket.org/windirstat/premake-stable
+		https://bitbucket.org/windirstat/premake-stable
 --]]
 local action = _ACTION or ""
 if _OPTIONS["publish"] then
-    print "INFO: Creating 'Publish' build solution."
-    publish = true
+	print "INFO: Creating 'Publish' build solution."
+	publish = true
 end
 do
 	-- This is mainly to support older premake4 builds
 	if not premake.project.getbasename then
-		print "Magic happens ..."
+		print "Magic happens for old premake4 versions without premake.project.getbasename() ..."
 		-- override the function to establish the behavior we'd get after patching Premake to have premake.project.getbasename
 		premake.project.getbasename = function(prjname, pattern)
 			return pattern:gsub("%%%%", prjname)
@@ -38,6 +38,127 @@ do
 			return path.getrelative(os.getcwd(), fname)
 		end
 	end
+	-- This is mainly to support older premake4 in which CompileAs did not work
+	-- for VS2010 and newer
+	if not premake.vstudio.vc2010.individualSourceFile or not premake.vstudio.vc200x.individualSourceFile then
+		local vc2010 = premake.vstudio.vc2010
+		local vc200x = premake.vstudio.vc200x
+		local tree = premake.tree
+		print "Magic happens for old premake4 versions faulty CompileAs handling for VS2010 and newer ..."
+		-- A boilerplate implementation
+		vc200x.individualSourceFile = function(prj, depth, fname)
+			-- handle file configuration stuff. This needs to be cleaned up and simplified.
+			-- configurations are cached, so this isn't as bad as it looks
+			for _, cfginfo in ipairs(prj.solution.vstudio_configs) do
+				if cfginfo.isreal then
+					local cfg = premake.getconfig(prj, cfginfo.src_buildcfg, cfginfo.src_platform)
+
+					local usePCH = (not prj.flags.NoPCH and prj.pchsource == node.cfg.name)
+					local isSourceCode = path.iscppfile(fname)
+					local needsCompileAs = (path.iscfile(fname) ~= premake.project.iscproject(prj))
+
+					if usePCH or (isSourceCode and needsCompileAs) then
+						_p(depth, '<FileConfiguration')
+						_p(depth, '\tName="%s"', cfginfo.name)
+						_p(depth, '\t>')
+						_p(depth, '\t<Tool')
+						_p(depth, '\t\tName="%s"', iif(cfg.system == "Xbox360",
+														"VCCLX360CompilerTool",
+														"VCCLCompilerTool"))
+						if needsCompileAs then
+							_p(depth, '\t\tCompileAs="%s"', iif(path.iscfile(fname), 1, 2))
+						end
+
+						if usePCH then
+							if cfg.system == "PS3" then
+								local options = table.join(premake.snc.getcflags(cfg),
+															premake.snc.getcxxflags(cfg),
+															cfg.buildoptions)
+								options = table.concat(options, " ");
+								options = options .. ' --create_pch="$(IntDir)/$(TargetName).pch"'
+								_p(depth, '\t\tAdditionalOptions="%s"', premake.esc(options))
+							else
+								_p(depth, '\t\tUsePrecompiledHeader="1"')
+							end
+						end
+
+						_p(depth, '\t/>')
+						_p(depth, '</FileConfiguration>')
+					end
+
+				end
+			end
+		end
+		vc200x.Files = function(prj)
+			local tr = premake.project.buildsourcetree(prj)
+
+			tree.traverse(tr, {
+				-- folders are handled at the internal nodes
+				onbranchenter = function(node, depth)
+					_p(depth, '<Filter')
+					_p(depth, '\tName="%s"', node.name)
+					_p(depth, '\tFilter=""')
+					_p(depth, '\t>')
+				end,
+
+				onbranchexit = function(node, depth)
+					_p(depth, '</Filter>')
+				end,
+
+				-- source files are handled at the leaves
+				onleaf = function(node, depth)
+					local fname = node.cfg.name
+
+					_p(depth, '<File')
+					_p(depth, '\tRelativePath="%s"', path.translate(fname, "\\"))
+					_p(depth, '\t>')
+					depth = depth + 1
+
+					vc200x.individualSourceFile(prj, depth, fname)
+
+					depth = depth - 1
+					_p(depth, '</File>')
+				end,
+			}, false, 2)
+
+		end
+		-- A boilerplate implementation
+		vc2010.individualSourceFile = function(prj, config_mappings, file)
+			local configs = prj.solution.vstudio_configs
+			local translatedpath = path.translate(file.name, "\\")
+			_p(2,'<ClCompile Include=\"%s\">', translatedpath)
+			for _, cfginfo in ipairs(configs) do
+				if config_mappings[cfginfo] and translatedpath == config_mappings[cfginfo] then
+					_p(3,'<PrecompiledHeader '.. if_config_and_platform() .. '>Create</PrecompiledHeader>', premake.esc(cfginfo.name))
+					config_mappings[cfginfo] = nil  --only one source file per pch
+				end
+			end
+			if path.iscfile(file.name) ~= premake.project.iscproject(prj) then
+				_p(3,'<CompileAs>%s</CompileAs>', iif(path.iscfile(file.name), 'CompileAsC', 'CompileAsCpp'))
+			end
+			_p(2,'</ClCompile>')
+		end
+		-- Overriding the function which calls the above
+		vc2010.compilerfilesgroup = function(prj)
+			local configs = prj.solution.vstudio_configs
+			local files = vc2010.getfilegroup(prj, "ClCompile")
+			if #files > 0  then
+				local config_mappings = {}
+				for _, cfginfo in ipairs(configs) do
+					local cfg = premake.getconfig(prj, cfginfo.src_buildcfg, cfginfo.src_platform)
+					if cfg.pchheader and cfg.pchsource and not cfg.flags.NoPCH then
+						config_mappings[cfginfo] = path.translate(cfg.pchsource, "\\")
+					end
+				end
+
+				_p(1,'<ItemGroup>')
+				for _, file in ipairs(files) do
+					vc2010.individualSourceFile(prj, config_mappings, file)
+				end
+				_p(1,'</ItemGroup>')
+			end
+		end
+	end
 	-- Name the project files after their VS version
 	local orig_getbasename = premake.project.getbasename
 	premake.project.getbasename = function(prjname, pattern)
@@ -52,6 +173,32 @@ do
 		end
 		return orig_getbasename(prjname, pattern)
 	end
+	-- Older versions of Premake4 fail to set the proper entry point, although they could simply let it out entirely ...
+	local orig_vc2010_link = premake.vstudio.vc2010.link
+	premake.vstudio.vc2010.link = function(cfg)
+		if cfg.flags and cfg.flags.Unicode then
+			io.capture()
+			orig_vc2010_link(cfg)
+			local captured = io.endcapture()
+			captured = captured:gsub("(<EntryPointSymbol>)(mainCRTStartup)", "%1w%2")
+			io.write(captured)
+		else
+			orig_vc2010_link(cfg)
+		end
+	end
+	local orig_vc200x_VCLinkerTool = premake.vstudio.vc200x.VCLinkerTool
+	premake.vstudio.vc200x.VCLinkerTool = function(cfg)
+		if cfg.flags and cfg.flags.Unicode then
+			io.capture()
+			orig_vc200x_VCLinkerTool(cfg)
+			local captured = io.endcapture()
+			captured = captured:gsub('(EntryPointSymbol=")(mainCRTStartup)', "%1w%2")
+			io.write(captured)
+		else
+			orig_vc200x_VCLinkerTool(cfg)
+		end
+	end
+	premake.vstudio.vc200x.toolmap.VCLinkerTool = premake.vstudio.vc200x.VCLinkerTool
 	-- Override the object directory paths ... don't make them "unique" inside premake4
 	local orig_gettarget = premake.gettarget
 	premake.gettarget = function(cfg, direction, pathstyle, namestyle, system)
