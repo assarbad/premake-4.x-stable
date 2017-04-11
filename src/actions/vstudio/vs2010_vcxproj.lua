@@ -417,7 +417,7 @@
 			end
 
 			if vc2010.config_type(cfg) == 'Application' and not cfg.flags.WinMain and not cfg.flags.Managed then
-				_p(3,'<EntryPointSymbol>mainCRTStartup</EntryPointSymbol>')
+				_p(3,'<EntryPointSymbol>%s</EntryPointSymbol>', iif(cfg.flags.Unicode, "wmainCRTStartup", "mainCRTStartup"))
 			end
 
 			import_lib(cfg)

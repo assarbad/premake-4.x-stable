@@ -388,7 +388,7 @@
 			end
 
 			if (cfg.kind == "ConsoleApp" or cfg.kind == "WindowedApp") and not cfg.flags.WinMain then
-				_p(4,'EntryPointSymbol="mainCRTStartup"')
+				_p(4,'EntryPointSymbol="%s"', iif(cfg.flags.Unicode, "wmainCRTStartup", "mainCRTStartup"))
 			end
 
 			if cfg.kind == "SharedLib" then
