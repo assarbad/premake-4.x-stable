@@ -114,7 +114,7 @@ do
 					_p(depth, '\t>')
 					depth = depth + 1
 
-					vc200x.individualSourceFile(prj, depth, fname)
+					vc200x.individualSourceFile(prj, depth, fname, node)
 
 					depth = depth - 1
 					_p(depth, '</File>')
@@ -166,7 +166,7 @@ do
 			local filters = { }
 			local filterfound = false
 
-			for file in project.eachfile(prj) do
+			for file in premake.project.eachfile(prj) do
 				-- split the path into its component parts
 				local folders = string.explode(file.vpath, "/", true)
 				local path = ""
@@ -181,10 +181,8 @@ do
 
 					-- have I seen this path before?
 					if not filters[path] then
-						print(prj.uuid or "nothing")
 						local seed = path .. (prj.uuid or "")
 						local deterministic_uuid = os.str2uuid(seed)
-						print("UUID = " .. deterministic_uuid)
 						filters[path] = true
 						_p(2, '<Filter Include="%s">', path)
 						_p(3, '<UniqueIdentifier>{%s}</UniqueIdentifier>', deterministic_uuid)
@@ -204,9 +202,9 @@ do
 	-- Name the project files after their VS version
 	local orig_getbasename = premake.project.getbasename
 	premake.project.getbasename = function(prjname, pattern)
-		-- The below is used to insert the .vs(8|9|10|11|12|14) into the file names for projects and solutions
+		-- The below is used to insert the .vs(8|9|10|11|12|14|15) into the file names for projects and solutions
 		if _ACTION then
-			name_map = {vs2005 = "vs8", vs2008 = "vs9", vs2010 = "vs10", vs2012 = "vs11", vs2013 = "vs12", vs2015 = "vs14", vs2017 = "vs15"}
+			name_map = {vs2002 = "vs7", vs2003 = "vs7_1", vs2005 = "vs8", vs2008 = "vs9", vs2010 = "vs10", vs2012 = "vs11", vs2013 = "vs12", vs2015 = "vs14", vs2017 = "vs15"}
 			if name_map[_ACTION] then
 				pattern = pattern:gsub("%%%%", "%%%%." .. name_map[_ACTION])
 			else
@@ -241,6 +239,22 @@ do
 		end
 	end
 	premake.vstudio.vc200x.toolmap.VCLinkerTool = premake.vstudio.vc200x.VCLinkerTool
+	-- Make sure we can generate XP-compatible projects for newer Visual Studio versions
+	local orig_vc2010_configurationPropertyGroup = premake.vstudio.vc2010.configurationPropertyGroup
+	premake.vstudio.vc2010.configurationPropertyGroup = function(cfg, cfginfo)
+		io.capture()
+		orig_vc2010_configurationPropertyGroup(cfg, cfginfo)
+		local captured = io.endcapture()
+		local toolsets = { vs2012 = "v110", vs2013 = "v120", vs2015 = "v140", vs2017 = "v141" }
+		local toolset = toolsets[_ACTION]
+		if toolset then
+			if _OPTIONS["xp"] then
+				toolset = toolset .. "_xp"
+				captured = captured:gsub("(</PlatformToolset>)", "_xp%1")
+			end
+		end
+		io.write(captured)
+	end
 	-- Override the object directory paths ... don't make them "unique" inside premake4
 	local orig_gettarget = premake.gettarget
 	premake.gettarget = function(cfg, direction, pathstyle, namestyle, system)
@@ -267,34 +281,18 @@ do
 		io.write("\239\187\191")
 		io.write(captured)
 	end
-	-- Make sure we can generate XP-compatible projects for newer Visual Studio versions
-	local orig_vc2010_configurationPropertyGroup = premake.vstudio.vc2010.configurationPropertyGroup
-	premake.vstudio.vc2010.configurationPropertyGroup = function(cfg, cfginfo)
-		io.capture()
-		orig_vc2010_configurationPropertyGroup(cfg, cfginfo)
-		local captured = io.endcapture()
-		local toolsets = { vs2012 = "v110", vs2013 = "v120", vs2015 = "v140", vs2017 = "v141" }
-		local toolset = toolsets[_ACTION]
-		if toolset then
-			if _OPTIONS["xp"] then
-				toolset = toolset .. "_xp"
-				captured = captured:gsub("(</PlatformToolset>)", "_xp%1")
+end
+local function transformMN(input) -- transform the macro names for older Visual Studio versions
+	local new_map   = { vs2002 = 0, vs2003 = 0, vs2005 = 0, vs2008 = 0 }
+	local replacements = { Platform = "PlatformName", Configuration = "ConfigurationName" }
+	if new_map[action] ~= nil then
+		for k,v in pairs(replacements) do
+			if input:find(k) then
+				input = input:gsub(k, v)
 			end
 		end
-		io.write(captured)
 	end
-	function transformMN(input) -- transform the macro names for older Visual Studio versions
-		local new_map   = { vs2002 = 0, vs2003 = 0, vs2005 = 0, vs2008 = 0 }
-		local replacements = { Platform = "PlatformName", Configuration = "ConfigurationName" }
-		if new_map[action] ~= nil then
-			for k,v in pairs(replacements) do
-				if input:find(k) then
-					input = input:gsub(k, v)
-				end
-			end
-		end
-		return input
-	end
+	return input
 end
 --
 -- Define the project. Put the release configuration first so it will be the
