@@ -241,7 +241,7 @@
 	--
 	--	EditAndContinue /ZI
 	--	ProgramDatabase /Zi
-	--	OldStyle C7 Compatable /Z7
+	--	OldStyle C7 Compatible /Z7
 	--
 		local debug_info = ''
 		if cfg.flags.Symbols then
@@ -250,7 +250,7 @@
 				or premake.config.isoptimizedbuild(cfg.flags)
 				or cfg.flags.NoEditAndContinue
 			then
-					debug_info = "ProgramDatabase"
+				debug_info = "ProgramDatabase"
 			else
 				debug_info = "EditAndContinue"
 			end
@@ -331,7 +331,7 @@
 			_p(3,'<OmitFramePointers>true</OmitFramePointers>')
 		end
 
-			compile_language(cfg)
+		compile_language(cfg)
 
 		_p(2,'</ClCompile>')
 	end
