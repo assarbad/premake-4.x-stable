@@ -33,7 +33,7 @@ vcbuild /rebuild /time "%SLNFILE%" "%SLNCFGNAME%|%SLNCFGPLTF%"
 set NEWNAME=%BASEPATH%%BASENAME%.rev-%HG_TIP_REVNO%-%HG_TIP_ID%.exe
 copy /y "%BASEPATH%%BINDIR%\%BASENAME%.exe" "%NEWNAME%"
 sigcheck -a "%NEWNAME%"
-gpg2 --batch --yes -u 0xC779D8290E88590F -bao "%NEWNAME%.asc" "%NEWNAME%"
+gpg --batch --yes -u 0xC779D8290E88590F -bao "%NEWNAME%.asc" "%NEWNAME%"
 copy /y "%BASEPATH%%BINDIR%\%BASENAME%.exe" "%BASEPATH%%BASENAME%.exe"
 endlocal
 goto :EOF

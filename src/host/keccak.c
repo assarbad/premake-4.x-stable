@@ -155,7 +155,7 @@ static void store64(UINT8 *x, UINT64 u)
     unsigned int i;
 
     for(i=0; i<8; ++i) {
-        x[i] = u;
+        x[i] = u & 0xFF;
         u >>= 8;
     }
 }
@@ -285,8 +285,8 @@ that use the Keccak-f[1600] permutation.
 void Keccak(unsigned int rate, unsigned int capacity, const unsigned char *input, unsigned long long int inputByteLen, unsigned char delimitedSuffix, unsigned char *output, unsigned long long int outputByteLen)
 {
     UINT8 state[200];
-    unsigned int rateInBytes = rate/8;
-    unsigned int blockSize = 0;
+    unsigned long long int rateInBytes = rate/8;
+    unsigned long long int blockSize = 0;
     unsigned int i;
 
     if (((rate + capacity) != 1600) || ((rate % 8) != 0))
@@ -323,7 +323,7 @@ void Keccak(unsigned int rate, unsigned int capacity, const unsigned char *input
     /* === Squeeze out all the output blocks === */
     while(outputByteLen > 0) {
         blockSize = MIN(outputByteLen, rateInBytes);
-        memcpy(output, state, blockSize);
+        memcpy(output, state, (size_t)blockSize);
         output += blockSize;
         outputByteLen -= blockSize;
 
