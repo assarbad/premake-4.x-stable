@@ -6,6 +6,10 @@
 
 #include "premake.h"
 
+#if PLATFORM_WINDOWS
+typedef BOOL(WINAPI* WowFuncSig)(HANDLE, PBOOL);
+#endif
+
 int os_is64bit(lua_State* L)
 {
 #if PLATFORM_WINDOWS
@@ -20,7 +24,6 @@ int os_is64bit(lua_State* L)
 	// returns false, the platform might still be 64-bit, but more 
 	// checking will need to be done on the Lua side of things.
 #if PLATFORM_WINDOWS
-	typedef BOOL(WINAPI* WowFuncSig)(HANDLE, PBOOL);
 	if (hKrnl32)
 	{
 		WowFuncSig func = (WowFuncSig)GetProcAddress(hKrnl32, "IsWow64Process");
