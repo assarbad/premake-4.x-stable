@@ -3,7 +3,7 @@
 #endif //APSTUDIO_INVOKED
 
 #include <winnt.rh>
-#include <verrsrc.h>
+#include <verrsrc.h> /* if this header is missing you should integrate the Windows 7 SP1 SDK in VS2005, later toolchains should have this file anyway */
 #ifdef HAVE_HGTIP
 #   include "hgtip.h"
 #endif
