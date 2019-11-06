@@ -204,7 +204,7 @@ do
 	premake.project.getbasename = function(prjname, pattern)
 		-- The below is used to insert the .vs(8|9|10|11|12|14|15) into the file names for projects and solutions
 		if _ACTION then
-			name_map = {vs2002 = "vs7", vs2003 = "vs7_1", vs2005 = "vs8", vs2008 = "vs9", vs2010 = "vs10", vs2012 = "vs11", vs2013 = "vs12", vs2015 = "vs14", vs2017 = "vs15"}
+			name_map = {vs2002 = "vs7", vs2003 = "vs7_1", vs2005 = "vs8", vs2008 = "vs9", vs2010 = "vs10", vs2012 = "vs11", vs2013 = "vs12", vs2015 = "vs14", vs2017 = "vs15", vs2019 = "vs16"}
 			if name_map[_ACTION] then
 				pattern = pattern:gsub("%%%%", "%%%%." .. name_map[_ACTION])
 			else
