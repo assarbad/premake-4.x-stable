@@ -271,7 +271,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="ollisign.cmd -a &quot;$(TargetPath)&quot; &quot;https://bitbucket.org/windirstat/premake-stable&quot; &quot;premake4&quot;"
+				CommandLine="ollisign.cmd -2 &quot;$(TargetPath)&quot; &quot;https://bitbucket.org/windirstat/premake-stable&quot; &quot;premake4&quot;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -483,6 +483,10 @@
 					</File>
 					<File
 						RelativePath="src\actions\vstudio\vs2017.lua"
+						>
+					</File>
+					<File
+						RelativePath="src\actions\vstudio\vs2019.lua"
 						>
 					</File>
 				</Filter>
