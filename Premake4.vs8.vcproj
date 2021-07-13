@@ -271,7 +271,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="ollisign.cmd -2 &quot;$(TargetPath)&quot; &quot;https://bitbucket.org/windirstat/premake-stable&quot; &quot;premake4&quot;"
+				CommandLine="ollisign.cmd -2 &quot;$(TargetPath)&quot; &quot;https://sourceforge.net/projects/premake4-wds/&quot; &quot;premake4&quot;"
 			/>
 		</Configuration>
 	</Configurations>

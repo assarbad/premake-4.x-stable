@@ -1,5 +1,4 @@
-﻿=================================
- Premake 4.4 fork for WinDirStat
+﻿ Premake 4.4 fork for WinDirStat
 =================================
 
 About
@@ -14,12 +13,12 @@ Downloads
 ---------
 
 I provide code-signed binaries in the `download area
-<https://bitbucket.org/windirstat/premake-stable/downloads>`_ for the
+<https://sourceforge.net/projects/premake4-wds/files/>`_ for the
 benefit of those who don't want to build the binary themselves.
 
 To get the latest code-signed build of ``premake4.exe`` simply
 download from `this link
-<https://bitbucket.org/windirstat/premake-stable/downloads/premake4.exe>`_.
+<https://sourceforge.net/projects/premake4-wds/files/>`_.
 
 The ``.asc`` files corresponding to the ``.exe`` files which are named
 something like ``premake4.rev-$rev-$commit.exe`` are the detached PGP

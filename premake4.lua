@@ -3,7 +3,7 @@
 		If you don't want to use the code-signed build that can be found in the
 		download section of that project, you can build from the WDS-branch at:
 
-		https://bitbucket.org/windirstat/premake-stable
+		https://sourceforge.net/projects/premake4-wds/
 --]]
 local action = _ACTION or ""
 if _OPTIONS["publish"] then
@@ -357,7 +357,7 @@ solution "Premake4"
 			files       { "src/host/premake4.rc" }
 
 		configuration {"windows", "Publish"}
-			postbuildcommands { 'ollisign.cmd -2 "$(TargetPath)" "https://bitbucket.org/windirstat/premake-stable" "premake4"' }
+			postbuildcommands { 'ollisign.cmd -2 "$(TargetPath)" "https://sourceforge.net/projects/premake4-wds/" "premake4"' }
 			defines     { "HAVE_HGTIP", "PREMAKE_VERSION=4.4-wds"}
 
 		configuration "linux or bsd"
