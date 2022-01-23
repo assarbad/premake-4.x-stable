@@ -136,3 +136,20 @@ MinimumVisualStudioVersion = 10.0.40219.1
 which don't seem to be mandatory, though.
 ]]
 	end
+
+	function suite.On2022()
+		_ACTION = "vs2022"
+		prepare()
+		test.capture [[
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 17
+		]]
+--[[
+VS 2022 seems to add something like:
+
+VisualStudioVersion = 17.0.0.0
+MinimumVisualStudioVersion = 10.0.40219.1
+
+which don't seem to be mandatory, though.
+]]
+	end
