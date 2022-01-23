@@ -30,7 +30,12 @@ set SLNFILE=%~6
 set SLNCFGNAME=%~7
 set SLNCFGPLTF=%~8
 vcbuild /rebuild /time "%SLNFILE%" "%SLNCFGNAME%|%SLNCFGPLTF%"
+echo Would now call:
+echo ollisign.cmd -2 "%BASEPATH%%BINDIR%\%BASENAME%.exe" "https://sourceforge.net/projects/windirstat/" "premake4"
+::call ollisign.cmd -2 "%BASEPATH%%BINDIR%\%BASENAME%.exe" "https://sourceforge.net/projects/windirstat/" "premake4"
 set NEWNAME=%BASEPATH%%BASENAME%.rev-%HG_TIP_REVNO%-%HG_TIP_ID%.exe
+echo Next copying and PGP-signing
+pause
 copy /y "%BASEPATH%%BINDIR%\%BASENAME%.exe" "%NEWNAME%"
 sigcheck -a "%NEWNAME%"
 gpg --batch --yes -u 0xC779D8290E88590F -bao "%NEWNAME%.asc" "%NEWNAME%"

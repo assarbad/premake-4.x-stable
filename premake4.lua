@@ -357,7 +357,6 @@ solution "Premake4"
 			files       { "src/host/premake4.rc" }
 
 		configuration {"windows", "Publish"}
-			postbuildcommands { 'ollisign.cmd -2 "$(TargetPath)" "https://sourceforge.net/projects/premake4-wds/" "premake4"' }
 			defines     { "HAVE_HGTIP", "PREMAKE_VERSION=4.4-wds"}
 
 		configuration "linux or bsd"

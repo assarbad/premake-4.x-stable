@@ -271,7 +271,6 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="ollisign.cmd -2 &quot;$(TargetPath)&quot; &quot;https://sourceforge.net/projects/premake4-wds/&quot; &quot;premake4&quot;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -291,7 +290,7 @@
 			>
 		</File>
 		<File
-			RelativePath="README.txt"
+			RelativePath="README.upstream.txt"
 			>
 		</File>
 		<File
@@ -487,6 +486,10 @@
 					</File>
 					<File
 						RelativePath="src\actions\vstudio\vs2019.lua"
+						>
+					</File>
+					<File
+						RelativePath="src\actions\vstudio\vs2022.lua"
 						>
 					</File>
 				</Filter>
