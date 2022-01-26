@@ -13,12 +13,12 @@ Downloads
 ---------
 
 I provide code-signed binaries in the `download area
-<https://sourceforge.net/projects/premake4-wds/files/>`_ for the
+<https://sourceforge.net/projects/windirstat/files/premake-stable/>`_ for the
 benefit of those who don't want to build the binary themselves.
 
 To get the latest code-signed build of ``premake4.exe`` simply
 download from `this link
-<https://sourceforge.net/projects/premake4-wds/files/>`_.
+<https://sourceforge.net/projects/windirstat/files/premake-stable/>`_.
 
 The ``.asc`` files corresponding to the ``.exe`` files which are named
 something like ``premake4.rev-$rev-$commit.exe`` are the detached PGP

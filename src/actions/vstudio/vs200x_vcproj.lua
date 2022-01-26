@@ -102,6 +102,7 @@
 		_p(3,'>')
 	end
 
+	vc200x.individualSourceFileOptions = nil
 
 	function vc200x.individualSourceFile(prj, depth, fname, node)
 		-- handle file configuration stuff. This needs to be cleaned up and simplified.
@@ -114,7 +115,7 @@
 				local isSourceCode = path.iscppfile(fname)
 				local needsCompileAs = (path.iscfile(fname) ~= premake.project.iscproject(prj))
 
-				if usePCH or (isSourceCode and needsCompileAs) then
+				if usePCH or (isSourceCode and needsCompileAs) or (type(vc200x.individualSourceFileOptions) == 'function') then
 					_p(depth, '<FileConfiguration')
 					_p(depth, '\tName="%s"', cfginfo.name)
 					_p(depth, '\t>')
@@ -137,6 +138,9 @@
 						else
 							_p(depth, '\t\tUsePrecompiledHeader="1"')
 						end
+					end
+					if (type(vc200x.individualSourceFileOptions) == 'function') then
+						vc200x.individualSourceFileOptions(prj, depth, fname, node)
 					end
 
 					_p(depth, '\t/>')

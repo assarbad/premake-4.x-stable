@@ -1,10 +1,15 @@
 --[[
-		This premake4.lua _requires_ windirstat/premake-stable to work properly.
-		If you don't want to use the code-signed build that can be found in the
-		download section of that project, you can build from the WDS-branch at:
+        This premake4.lua _requires_ windirstat/premake-stable to work properly.
+        If you don't want to use the code-signed build that can be found in the
+        ./common/ subfolder, you can build from the WDS-branch over at:
 
-		https://sourceforge.net/projects/premake4-wds/
---]]
+        https://sourceforge.net/projects/windirstat/
+
+        Prebuilt, signed binaries are available from:
+          https://github.com/windirstat/premake-stable
+          https://sourceforge.net/projects/windirstat/files/premake-stable/
+          https://osdn.net/projects/windirstat/storage/historical/premake-stable/
+  ]]
 local action = _ACTION or ""
 if _OPTIONS["publish"] then
 	print "INFO: Creating 'Publish' build solution."
@@ -204,7 +209,7 @@ do
 	premake.project.getbasename = function(prjname, pattern)
 		-- The below is used to insert the .vs(8|9|10|11|12|14|15|16|17) into the file names for projects and solutions
 		if _ACTION then
-			name_map = {vs2002 = "vs7", vs2003 = "vs7_1", vs2005 = "vs8", vs2008 = "vs9", vs2010 = "vs10", vs2012 = "vs11", vs2013 = "vs12", vs2015 = "vs14", vs2017 = "vs15", vs2019 = "vs16", vs2022 = "vs17"}
+			name_map = {vs2005 = "vs8", vs2008 = "vs9", vs2010 = "vs10", vs2012 = "vs11", vs2013 = "vs12", vs2015 = "vs14", vs2017 = "vs15", vs2019 = "vs16", vs2022 = "vs17"}
 			if name_map[_ACTION] then
 				pattern = pattern:gsub("%%%%", "%%%%." .. name_map[_ACTION])
 			else

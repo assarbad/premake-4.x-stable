@@ -526,6 +526,8 @@
 		end
 	end
 
+	vc2010.individualSourceFileOptions = nil
+
 	function vc2010.individualSourceFile(prj, config_mappings, file)
 		local configs = prj.solution.vstudio_configs
 		local translatedpath = path.translate(file.name, "\\")
@@ -538,6 +540,9 @@
 		end
 		if path.iscfile(file.name) ~= premake.project.iscproject(prj) then
 			_p(3,'<CompileAs>%s</CompileAs>', iif(path.iscfile(file.name), 'CompileAsC', 'CompileAsCpp'))
+		end
+		if (type(vc2010.individualSourceFileOptions) == 'function') then
+			vc2010.individualSourceFileOptions(prj, config_mappings, file)
 		end
 		_p(2,'</ClCompile>')
 	end
