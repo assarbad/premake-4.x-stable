@@ -322,11 +322,21 @@ static int load_file_scripts(lua_State* L)
 
 	if (lua_isnil(L, -1))
 	{
+		/* call os.pathsearch() to locate _premake_main.lua */
+		lua_pushcfunction(L, os_pathsearch);
+		lua_pushstring(L, "_premake_main.lua");
+		lua_pushstring(L, "src");
+		lua_pushstring(L, getenv("PREMAKE_PATH"));
+		lua_call(L, 3, 1);
+
+		if (lua_isnil(L, -1))
+		{
 		printf(ERROR_MESSAGE,
-			"Unable to find _premake_main.lua; use /scripts option when in debug mode!\n"
+				"Unable to find _premake_main.lua; use --scripts option when in debug mode!\n"
 			"Please refer to the documentation (or build in release mode instead)."
 		);
 		return !OKAY;
+	}
 	}
 
 	/* run the bootstrapping script */
@@ -356,6 +366,10 @@ static int load_file_scripts(lua_State* L)
 	}
 }
 
+extern const char* builtin_script_fnames[];
+
+#define luaL_dobuffer(L, s, n) \
+	(luaL_loadbuffer(L, s, strlen(s), n) || lua_pcall(L, 0, LUA_MULTRET, 0))
 
 /**
  * When running in release mode, the scripts are loaded from a static data
@@ -367,16 +381,31 @@ static int load_builtin_scripts(lua_State* L)
 	int i;
 	for (i = 0; builtin_scripts[i]; ++i)
 	{
+		if (builtin_script_fnames[i])
+		{
+			if (luaL_dobuffer(L, builtin_scripts[i], builtin_script_fnames[i]) != OKAY)
+			{
+				printf(ERROR_MESSAGE, lua_tostring(L, -1));
+				return !OKAY;
+			}
+		}
+		else
+		{
 		if (luaL_dostring(L, builtin_scripts[i]) != OKAY)
 		{
 			printf(ERROR_MESSAGE, lua_tostring(L, -1));
 			return !OKAY;
 		}
 	}
+	}
+
+	/* in release mode, also show full traceback on all errors */
+	lua_getglobal(L, "debug");
+	lua_getfield(L, -1, "traceback");
 
 	/* hand off control to the scripts */
 	lua_getglobal(L, "_premake_main");
-	if (lua_pcall(L, 0, 1, 0) != OKAY)
+	if (lua_pcall(L, 0, 1, -2) != OKAY)
 	{
 		printf(ERROR_MESSAGE, lua_tostring(L, -1));
 		return !OKAY;

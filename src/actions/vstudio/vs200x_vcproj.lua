@@ -102,36 +102,9 @@
 		_p(3,'>')
 	end
 	
+	vc200x.individualSourceFileOptions = nil
 
---
--- Write out the <Files> element.
---
-
-	function vc200x.Files(prj)
-		local tr = premake.project.buildsourcetree(prj)
-		
-		tree.traverse(tr, {
-			-- folders are handled at the internal nodes
-			onbranchenter = function(node, depth)
-				_p(depth, '<Filter')
-				_p(depth, '\tName="%s"', node.name)
-				_p(depth, '\tFilter=""')
-				_p(depth, '\t>')
-			end,
-
-			onbranchexit = function(node, depth)
-				_p(depth, '</Filter>')
-			end,
-
-			-- source files are handled at the leaves
-			onleaf = function(node, depth)
-				local fname = node.cfg.name
-				
-				_p(depth, '<File')
-				_p(depth, '\tRelativePath="%s"', path.translate(fname, "\\"))
-				_p(depth, '\t>')
-				depth = depth + 1
-
+	function vc200x.individualSourceFile(prj, depth, fname, node)
 				-- handle file configuration stuff. This needs to be cleaned up and simplified.
 				-- configurations are cached, so this isn't as bad as it looks
 				for _, cfginfo in ipairs(prj.solution.vstudio_configs) do
@@ -142,7 +115,7 @@
 						local isSourceCode = path.iscppfile(fname)
 						local needsCompileAs = (path.iscfile(fname) ~= premake.project.iscproject(prj))
 						
-						if usePCH or (isSourceCode and needsCompileAs) then
+				if usePCH or (isSourceCode and needsCompileAs) or (type(vc200x.individualSourceFileOptions) == 'function') then
 							_p(depth, '<FileConfiguration')
 							_p(depth, '\tName="%s"', cfginfo.name)
 							_p(depth, '\t>')
@@ -166,6 +139,9 @@
 									_p(depth, '\t\tUsePrecompiledHeader="1"')
 								end
 							end
+					if (type(vc200x.individualSourceFileOptions) == 'function') then
+						vc200x.individualSourceFileOptions(prj, depth, fname, node)
+					end
 
 							_p(depth, '\t/>')
 							_p(depth, '</FileConfiguration>')
@@ -173,6 +149,38 @@
 
 					end
 				end
+	end
+
+--
+-- Write out the <Files> element.
+--
+
+	function vc200x.Files(prj)
+		local tr = premake.project.buildsourcetree(prj)
+
+		tree.traverse(tr, {
+			-- folders are handled at the internal nodes
+			onbranchenter = function(node, depth)
+				_p(depth, '<Filter')
+				_p(depth, '\tName="%s"', node.name)
+				_p(depth, '\tFilter=""')
+				_p(depth, '\t>')
+			end,
+
+			onbranchexit = function(node, depth)
+				_p(depth, '</Filter>')
+			end,
+
+			-- source files are handled at the leaves
+			onleaf = function(node, depth)
+				local fname = node.cfg.name
+
+				_p(depth, '<File')
+				_p(depth, '\tRelativePath="%s"', path.translate(fname, "\\"))
+				_p(depth, '\t>')
+				depth = depth + 1
+
+				vc200x.individualSourceFile(prj, depth, fname, node)
 
 				depth = depth - 1
 				_p(depth, '</File>')
@@ -388,7 +396,7 @@
 			end
 			
 			if (cfg.kind == "ConsoleApp" or cfg.kind == "WindowedApp") and not cfg.flags.WinMain then
-				_p(4,'EntryPointSymbol="mainCRTStartup"')
+				_p(4,'EntryPointSymbol="%s"', iif(cfg.flags.Unicode, "wmainCRTStartup", "mainCRTStartup"))
 			end
 			
 			if cfg.kind == "SharedLib" then

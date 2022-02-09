@@ -63,82 +63,148 @@ int os_getversion(lua_State* L)
 
 SYSTEM_INFO getsysteminfo()
 {
-	typedef void (WINAPI *GetNativeSystemInfoSig)(LPSYSTEM_INFO);
-	GetNativeSystemInfoSig nativeSystemInfo = (GetNativeSystemInfoSig)
-	GetProcAddress(GetModuleHandle(TEXT("kernel32")), "GetNativeSystemInfo");
+	static SYSTEM_INFO systemInfo;
+	HMODULE hKrnl32 = GetModuleHandle(TEXT("kernel32"));
+	memset(&systemInfo, 0, sizeof(systemInfo));
+	if (hKrnl32)
+	{
+		typedef void (WINAPI* GetNativeSystemInfoSig)(LPSYSTEM_INFO);
+		GetNativeSystemInfoSig nativeSystemInfo = (GetNativeSystemInfoSig)GetProcAddress(hKrnl32, "GetNativeSystemInfo");
 
-	SYSTEM_INFO systemInfo = {{0}};
-	if ( nativeSystemInfo ) nativeSystemInfo(&systemInfo);
-	else GetSystemInfo(&systemInfo);
+		if (nativeSystemInfo)
+			nativeSystemInfo(&systemInfo);
+		else
+			GetSystemInfo(&systemInfo);
+	}
 	return systemInfo;
+}
+
+#ifndef NT_SUCCESS
+#   define NT_SUCCESS(x) ((x) >= 0)
+#endif
+
+OSVERSIONINFOEXW const * GetOSVersionInfo()
+{
+	static OSVERSIONINFOEXW* posvix = NULL;
+	if (!posvix)
+	{
+		static OSVERSIONINFOEXW osvix = { sizeof(OSVERSIONINFOEXW), 0, 0, 0, 0,{ 0 } }; // not an error, this has to be the W variety!
+		static LONG(WINAPI * RtlGetVersion)(OSVERSIONINFOEXW*) = NULL;
+		static HMODULE hNtDll = NULL;
+		hNtDll = GetModuleHandle(TEXT("ntdll.dll"));
+		if (hNtDll)
+		{
+			*(FARPROC*)&RtlGetVersion = GetProcAddress(hNtDll, "RtlGetVersion");
+			if (NULL != RtlGetVersion)
+			{
+				if (NT_SUCCESS(RtlGetVersion(&osvix)))
+				{
+					posvix = &osvix;
+	}
+	}
+		}
+		}
+	return posvix;
 }
 
 void getversion(struct OsVersionInfo* info)
 {
-	OSVERSIONINFOEX versionInfo = {0};
+	static OSVERSIONINFOEXW const* posvix = NULL;
+	static struct OsVersionInfo s_info;
+	s_info.majorversion = 0;
+	s_info.minorversion = 0;
+	s_info.revision = 0;
+	s_info.description = "Windows";
 
-	versionInfo.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
-	GetVersionEx((OSVERSIONINFO*)&versionInfo);
+	if (!posvix)
+	{
+		posvix = GetOSVersionInfo();
+		if (posvix)
+		{
+			s_info.majorversion = posvix->dwMajorVersion;
+			s_info.minorversion = posvix->dwMinorVersion;
+			s_info.revision = posvix->wServicePackMajor;
+			switch (posvix->dwMajorVersion)
+			{
+			case 5:
+				switch (posvix->dwMinorVersion)
+				{
+				case 0:
+					s_info.description = "Windows 2000";
+					break;
+				case 1:
+					s_info.description = "Windows XP";
+					break;
+				case 2:
+					if (posvix->wProductType == VER_NT_WORKSTATION)
+						s_info.description = "Windows XP x64";
+		else
+						if (posvix->wSuiteMask == VER_SUITE_WH_SERVER)
+							s_info.description = "Windows Home Server";
+						else
+		{
+							if (GetSystemMetrics(SM_SERVERR2) == 0)
+								s_info.description = "Windows Server 2003";
+							else
+								s_info.description = "Windows Server 2003 R2";
+		}
+					break;
+				default:
+					s_info.description = "Windows [5.x]";
+					break;
+	}
+				break;
+			case 6:
+				switch (posvix->dwMinorVersion)
+		{
+				case 0:
+					if (posvix->wProductType == VER_NT_WORKSTATION)
+						s_info.description = "Windows Vista";
+		else
+						s_info.description = "Windows Server 2008";
+					break;
+				case 1:
+					if (posvix->wProductType == VER_NT_WORKSTATION)
+						s_info.description = "Windows 7";
+					else
+						s_info.description = "Windows Server 2008 R2";
+					break;
+				case 2:
+					if (posvix->wProductType == VER_NT_WORKSTATION)
+						s_info.description = "Windows 8";
+					else
+						s_info.description = "Windows Server 2012";
+					break;
+				case 3:
+					if (posvix->wProductType == VER_NT_WORKSTATION)
+						s_info.description = "Windows 8.1";
+					else
+						s_info.description = "Windows Server 2012 R2";
+					break;
+				default:
+					s_info.description = "Windows [6.x]";
+					break;
+	}
+				break;
+			case 10:
+				switch (posvix->dwMinorVersion)
+		{
+				case 0:
+					if (posvix->wProductType == VER_NT_WORKSTATION)
+						s_info.description = "Windows 10";
+		else
+						s_info.description = "Windows Server 2016/2019";
+					break;
+				default:
+					s_info.description = "Windows [10.x]";
+					break;
+		}
+				break;
+	}
+	}
+	}
 
-	info->majorversion = versionInfo.dwMajorVersion;
-	info->minorversion = versionInfo.dwMinorVersion;
-	info->revision = versionInfo.wServicePackMajor;
-
-	if (versionInfo.dwMajorVersion == 5 && versionInfo.dwMinorVersion == 0)
-	{
-		info->description = "Windows 2000";
-	}
-	else if (versionInfo.dwMajorVersion == 5 && versionInfo.dwMinorVersion == 1)
-	{
-		info->description = "Windows XP";
-	}
-	else if (versionInfo.dwMajorVersion == 5 && versionInfo.dwMinorVersion == 2)
-	{
-		SYSTEM_INFO systemInfo = getsysteminfo();
-		if (versionInfo.wProductType == VER_NT_WORKSTATION &&
-			systemInfo.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64)
-		{
-			info->description = "Windows XP Professional x64";
-		}
-		else if (versionInfo.wSuiteMask & VER_SUITE_WH_SERVER)
-		{
-			info->description = "Windows Home Server";
-		}
-		else if (GetSystemMetrics(SM_SERVERR2) == 0)
-		{
-			info->description = "Windows Server 2003";
-		}
-		else
-		{
-			info->description = "Windows Server 2003 R2";
-		}
-	}
-	else if (versionInfo.dwMajorVersion == 6 && versionInfo.dwMinorVersion == 0)
-	{
-		if (versionInfo.wProductType == VER_NT_WORKSTATION)
-		{
-			info->description = "Windows Vista";
-		}
-		else
-		{
-			info->description = "Windows Server 2008";
-		}
-	}
-	else if (versionInfo.dwMajorVersion == 6 && versionInfo.dwMinorVersion == 1 )
-	{
-		if (versionInfo.wProductType != VER_NT_WORKSTATION)
-		{
-			info->description = "Windows Server 2008 R2";
-		}
-		else
-		{
-			info->description = "Windows 7";
-		}
-	}
-	else
-	{
-		info->description = "Windows";
-	}
+	memmove(info, &s_info, sizeof(struct OsVersionInfo));
 }
 
 /*************************************************************/

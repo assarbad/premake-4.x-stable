@@ -79,7 +79,7 @@
 		_p(2,'<UseDebugLibraries>%s</UseDebugLibraries>', iif(optimisation(cfg) == "Disabled","true","false"))
 		_p(2,'<CharacterSet>%s</CharacterSet>',iif(cfg.flags.Unicode,"Unicode","MultiByte"))
 
-		local toolsets = { vs2012 = "v110", vs2013 = "v120", vs2015 = "v140" }
+		local toolsets = { vs2012 = "v110", vs2013 = "v120", vs2015 = "v140", vs2017 = "v141", vs2019 = "v142", vs2022 = "v143" }
 		local toolset = toolsets[_ACTION]
 		if toolset then
 			_p(2,'<PlatformToolset>%s</PlatformToolset>', toolset)
@@ -417,7 +417,7 @@
 			end
 
 			if vc2010.config_type(cfg) == 'Application' and not cfg.flags.WinMain and not cfg.flags.Managed then
-				_p(3,'<EntryPointSymbol>mainCRTStartup</EntryPointSymbol>')
+				_p(3,'<EntryPointSymbol>%s</EntryPointSymbol>', iif(cfg.flags.Unicode, "wmainCRTStartup", "mainCRTStartup"))
 			end
 
 			import_lib(cfg)
@@ -526,6 +526,26 @@
 		end
 	end
 
+	vc2010.individualSourceFileOptions = nil
+
+	function vc2010.individualSourceFile(prj, config_mappings, file)
+		local configs = prj.solution.vstudio_configs
+		local translatedpath = path.translate(file.name, "\\")
+		_p(2,'<ClCompile Include=\"%s\">', translatedpath)
+		for _, cfginfo in ipairs(configs) do
+			if config_mappings[cfginfo] and translatedpath == config_mappings[cfginfo] then
+				_p(3,'<PrecompiledHeader '.. if_config_and_platform() .. '>Create</PrecompiledHeader>', premake.esc(cfginfo.name))
+				config_mappings[cfginfo] = nil  --only one source file per pch
+			end
+		end
+		if path.iscfile(file.name) ~= premake.project.iscproject(prj) then
+			_p(3,'<CompileAs>%s</CompileAs>', iif(path.iscfile(file.name), 'CompileAsC', 'CompileAsCpp'))
+		end
+		if (type(vc2010.individualSourceFileOptions) == 'function') then
+			vc2010.individualSourceFileOptions(prj, config_mappings, file)
+		end
+		_p(2,'</ClCompile>')
+	end
 
 	function vc2010.compilerfilesgroup(prj)
 		local configs = prj.solution.vstudio_configs
@@ -541,15 +561,7 @@
 
 			_p(1,'<ItemGroup>')
 			for _, file in ipairs(files) do
-				local translatedpath = path.translate(file.name, "\\")
-				_p(2,'<ClCompile Include=\"%s\">', translatedpath)
-				for _, cfginfo in ipairs(configs) do
-					if config_mappings[cfginfo] and translatedpath == config_mappings[cfginfo] then
-						_p(3,'<PrecompiledHeader '.. if_config_and_platform() .. '>Create</PrecompiledHeader>', premake.esc(cfginfo.name))
-						config_mappings[cfginfo] = nil  --only one source file per pch
-					end
-				end
-				_p(2,'</ClCompile>')
+				vc2010.individualSourceFile(prj, config_mappings, file)
 			end
 			_p(1,'</ItemGroup>')
 		end

@@ -66,6 +66,9 @@
 		"actions/vstudio/vs2012.lua",
 		"actions/vstudio/vs2013.lua",
 		"actions/vstudio/vs2015.lua",
+		"actions/vstudio/vs2017.lua",
+		"actions/vstudio/vs2019.lua",
+		"actions/vstudio/vs2022.lua",
 
 		-- Xcode action
 		"actions/xcode/_xcode.lua",

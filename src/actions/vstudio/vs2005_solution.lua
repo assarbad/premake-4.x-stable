@@ -40,7 +40,11 @@
 	function sln2005.header(sln)
 		local action = premake.action.current()
 		_p('Microsoft Visual Studio Solution File, Format Version %d.00', action.vstudio.solutionVersion)
+		if action.vstudio.shortSlnVersion ~= nil then
+			_p('# Visual Studio %s', action.vstudio.shortSlnVersion)
+		else
 		_p('# Visual Studio %s', _ACTION:sub(3))
+		end
 	end
 
 

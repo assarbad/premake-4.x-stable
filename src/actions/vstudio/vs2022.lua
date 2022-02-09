@@ -1,23 +1,23 @@
 --
--- vs2015.lua
--- Baseline support for Visual Studio 2015.
+-- vs2022.lua
+-- Baseline support for Visual Studio 2022.
 -- Copyright (c) 2013 Jason Perkins and the Premake project
 --
 
-	premake.vstudio.vc2015 = {}
-	local vc2015 = premake.vstudio.vc2015
+	premake.vstudio.vc2022 = {}
+	local vc2022 = premake.vstudio.vc2022
 	local vstudio = premake.vstudio
 
 
 ---
--- Register a command-line action for Visual Studio 2015.
+-- Register a command-line action for Visual Studio 2022.
 ---
 
 	newaction
 	{
-		trigger         = "vs2015",
-		shortname       = "Visual Studio 2015",
-		description     = "Generate Microsoft Visual Studio 2015 project files",
+		trigger         = "vs2022",
+		shortname       = "Visual Studio 2022",
+		description     = "Generate Microsoft Visual Studio 2022 project files",
 		os              = "windows",
 
 		valid_kinds     = { "ConsoleApp", "WindowedApp", "StaticLib", "SharedLib" },
@@ -51,8 +51,8 @@
 
 		vstudio = {
 			solutionVersion = "12",
-			targetFramework = "4.5.2",
-			toolsVersion    = "14.0",
-			shortSlnVersion = "14",
+			targetFramework = "4.7",
+			toolsVersion    = "17.0",
+			shortSlnVersion = "17",
 		}
 	}

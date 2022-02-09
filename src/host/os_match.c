@@ -8,6 +8,17 @@
 #include <string.h>
 #include "premake.h"
 
+static int skip_dot_entries(const char* name)
+{
+	if (name[0] == '.')
+	{
+		if (name[1] == '\0')
+			return 1;
+		if (name[1] == '.' && name[2] == '\0')
+			return 1;
+	}
+	return 0;
+}
 
 #if PLATFORM_WINDOWS
 
@@ -25,9 +36,16 @@ int os_matchstart(lua_State* L)
 {
 	const char* mask = luaL_checkstring(L, 1);
 	MatchInfo* m = (MatchInfo*)malloc(sizeof(MatchInfo));
-	m->handle = FindFirstFile(mask, &m->entry);
+	if (m)
+	{
+		m->handle = FindFirstFile(mask, &m->entry); /* error handling happens in os_matchnext() below */
 	m->is_first = 1;
 	lua_pushlightuserdata(L, m);
+	}
+	else
+	{
+		lua_pushnil(L);
+	}
 	return 1;
 }
 
@@ -57,9 +75,8 @@ int os_matchisfile(lua_State* L)
 int os_matchnext(lua_State* L)
 {
 	MatchInfo* m = (MatchInfo*)lua_touserdata(L, 1);
-	if (m->handle == INVALID_HANDLE_VALUE) {
+	if (m->handle == INVALID_HANDLE_VALUE)
 		return 0;
-	}
 
 	while (m)  /* loop forever */
 	{
@@ -70,6 +87,10 @@ int os_matchnext(lua_State* L)
 		}
 
 		m->is_first = 0;
+		/* Ignore the directory entries for . and .. only */
+		if (m->entry.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+			if (skip_dot_entries(m->entry.cFileName))
+				continue;
 		lua_pushboolean(L, 1);
 		return 1;
 	}
@@ -167,6 +188,8 @@ int os_matchnext(lua_State* L)
 	while (m->entry != NULL)
 	{
 		const char* name = m->entry->d_name;
+		/* Ignore the directory entries for . and .. only */
+		if (!skip_dot_entries(name))
 		if (fnmatch(m->mask, name, 0) == 0)
 		{
 			lua_pushboolean(L, 1);
