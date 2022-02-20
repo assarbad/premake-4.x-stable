@@ -44,3 +44,4 @@ src/host/hgtip.h
 .vs/**
 
 .git/
+premake4.rev-*.exe

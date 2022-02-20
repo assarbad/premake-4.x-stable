@@ -48,6 +48,7 @@
 		test.capture [[
 	<ItemGroup>
 		<ClCompile Include="hello.c">
+			<CompileAs>CompileAsC</CompileAs>
 		</ClCompile>
 	</ItemGroup>
 		]]
@@ -86,6 +87,7 @@
 		test.capture [[
 	<ItemGroup>
 		<ClCompile Include="src\greetings\hello.c">
+			<CompileAs>CompileAsC</CompileAs>
 		</ClCompile>
 	</ItemGroup>
 		]]
