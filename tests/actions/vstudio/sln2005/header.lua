@@ -77,12 +77,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 		]]
 --[[
-VS 2013 seems to add something like:
+VS 2013 seems to add something like (not mandatory):
 
-VisualStudioVersion = 12.0.31101.0
+VisualStudioVersion = 12.0.0.0
 MinimumVisualStudioVersion = 10.0.40219.1
 
-which don't seem to be mandatory, though.
+which seems to be used by the Visual Studio Version Selector to launch the correct VS.
 ]]
 	end
 
@@ -91,15 +91,15 @@ which don't seem to be mandatory, though.
 		prepare()
 		test.capture [[
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-		]]
+# Visual Studio Version 14
+VisualStudioVersion = 14.]]
 --[[
-VS 2015 seems to add something like:
+VS 2015 seems to add something like (not mandatory):
 
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.0.0
 MinimumVisualStudioVersion = 10.0.40219.1
 
-which don't seem to be mandatory, though.
+which seems to be used by the Visual Studio Version Selector to launch the correct VS.
 ]]
 	end
 
@@ -108,15 +108,15 @@ which don't seem to be mandatory, though.
 		prepare()
 		test.capture [[
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-		]]
+# Visual Studio Version 15
+VisualStudioVersion = 15.]]
 --[[
-VS 2017 seems to add something like:
+VS 2017 seems to add something like (not mandatory):
 
-VisualStudioVersion = 15.0.26228.4
+VisualStudioVersion = 15.0.0.0
 MinimumVisualStudioVersion = 10.0.40219.1
 
-which don't seem to be mandatory, though.
+which seems to be used by the Visual Studio Version Selector to launch the correct VS.
 ]]
 	end
 
@@ -125,15 +125,15 @@ which don't seem to be mandatory, though.
 		prepare()
 		test.capture [[
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 16
-		]]
+# Visual Studio Version 16
+VisualStudioVersion = 16.]]
 --[[
-VS 2019 seems to add something like:
+VS 2019 seems to add something like (not mandatory):
 
-VisualStudioVersion = 16.0.29411.108
+VisualStudioVersion = 16.0.0.0
 MinimumVisualStudioVersion = 10.0.40219.1
 
-which don't seem to be mandatory, though.
+which seems to be used by the Visual Studio Version Selector to launch the correct VS.
 ]]
 	end
 
@@ -142,14 +142,14 @@ which don't seem to be mandatory, though.
 		prepare()
 		test.capture [[
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 17
-		]]
+# Visual Studio Version 17
+VisualStudioVersion = 17.]]
 --[[
-VS 2022 seems to add something like:
+VS 2022 seems to add something like (not mandatory):
 
 VisualStudioVersion = 17.0.0.0
 MinimumVisualStudioVersion = 10.0.40219.1
 
-which don't seem to be mandatory, though.
+which seems to be used by the Visual Studio Version Selector to launch the correct VS.
 ]]
 	end
