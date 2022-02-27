@@ -42,6 +42,27 @@
 		]]
 	end
 
+	function suite.On2003()
+		_ACTION = 'vs2003'
+		prepare()
+		test.capture [[
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="7.10"
+		]]
+	end
+
+	function suite.On2005()
+		_ACTION = 'vs2005'
+		prepare()
+		test.capture [[
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="8.00"
+		]]
+	end
 
 	function suite.On2008()
 		_ACTION = 'vs2008'

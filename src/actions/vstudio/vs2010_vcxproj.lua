@@ -576,12 +576,21 @@
 		io.eol = "\r\n"
 		_p('<?xml version="1.0" encoding="utf-8"?>')
 
-		local t = ""
-		if targets then
-			t = ' DefaultTargets="' .. targets .. '"'
+		local action = premake.action.current()
+
+		local toolversion = ''
+		if (_ACTION >= "vs2010") and (_ACTION <= "vs2017") then
+			if action.vstudio.toolsVersion then
+				toolversion = string.format(' ToolsVersion="%s"', action.vstudio.toolsVersion)
+			end
 		end
 
-		_p('<Project%s ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">', t)
+		local default_targets = ""
+		if targets then
+			default_targets = ' DefaultTargets="' .. targets .. '"'
+		end
+
+		_p('<Project%s%s xmlns="http://schemas.microsoft.com/developer/msbuild/2003">', default_targets, toolversion)
 	end
 
 

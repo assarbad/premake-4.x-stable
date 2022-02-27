@@ -207,6 +207,23 @@
 		end
 	end
 
+--
+-- Write the build events groups.
+--
+
+	function cs2005.buildevents(cfg)
+		if #cfg.prebuildcommands > 0 then
+			_p('  <PropertyGroup>')
+			_p('    <PreBuildEvent>%s</PreBuildEvent>', premake.esc(table.implode(cfg.prebuildcommands, "", "", "\r\n")))
+			_p('  </PropertyGroup>')
+		end
+		if #cfg.postbuildcommands > 0 then
+			_p('  <PropertyGroup>')
+			_p('    <PostBuildEvent>%s</PostBuildEvent>', premake.esc(table.implode(cfg.postbuildcommands, "", "", "\r\n")))
+			_p('  </PropertyGroup>')
+		end
+	end
+
 
 --
 -- The main function: write the project file.
