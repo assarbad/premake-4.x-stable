@@ -41,7 +41,7 @@
 		local action = premake.action.current()
 		_p('Microsoft Visual Studio Solution File, Format Version %d.00', action.vstudio.solutionVersion)
 		if action.vstudio.shortSlnVersion ~= nil then
-			_p('# Visual Studio Version %s', action.vstudio.shortSlnVersion)
+			_p('# Visual Studio %s%s', iif(_ACTION >= "vs2019", "Version ", ""), action.vstudio.shortSlnVersion)
 			_p('VisualStudioVersion = %s.0.0.0', action.vstudio.shortSlnVersion)
 		else
 			_p('# Visual Studio %s', _ACTION:sub(3))

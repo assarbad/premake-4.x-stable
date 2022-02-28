@@ -6,8 +6,10 @@ About
 This is a friendly fork of `premake/premake-4.x
 <https://github.com/premake/premake-4.x>`_.
 
-I usually send pull requests to Jason, but I realize that not all of
-my changes may be suitable or desirable. So I keep a separate branch.
+I usually sent pull requests to Jason, but I realize that not all of
+my changes may be suitable or desirable. So I kept a separate branch.
+
+Meanwhile Jason seems to have moved on to `premake5<https://github.com/premake/premake-core>`_.
 
 Downloads
 ---------
